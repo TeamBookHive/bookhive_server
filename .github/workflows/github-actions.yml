@@ -1,0 +1,62 @@
+name: Build and Deploy using github actions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Jar
+        run: ./gradlew clean build -x test
+
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 -t bookhive.kr.ncr.ntruss.com/bookhive .
+
+      - name: Login to NCP Container Registry
+        run: echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login bookhive.kr.ncr.ntruss.com -u ${{ secrets.NCP_REGISTRY_USERNAME }} --password-stdin
+
+      - name: Push Docker Image to NCP
+        run: docker push bookhive.kr.ncr.ntruss.com/bookhive
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to NCP Vm via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_SSH_HOST }}
+          username: ${{ secrets.REMOTE_SSH_USERNAME }}
+          password: ${{ secrets.REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            
+            echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login bookhive.kr.ncr.ntruss.com -u ${{ secrets.NCP_REGISTRY_USERNAME }} --password-stdin
+            
+            
+            docker pull bookhive.kr.ncr.ntruss.com/bookhive
+            
+            echo "${{ secrets.APPLICATION_ENV }}" | base64 --decode > /root/.env
+            
+            if [ "$(docker ps -q -f name=bookhive)" ]; then
+              docker stop bookhive && docker rm bookhive
+            fi
+
+            docker run -d --name bookhive --env-file /root/.env -p 8080:8080 --restart always bookhive.kr.ncr.ntruss.com/bookhive
