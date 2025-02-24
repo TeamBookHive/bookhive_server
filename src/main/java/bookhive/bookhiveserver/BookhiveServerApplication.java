@@ -8,6 +8,5 @@ public class BookhiveServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BookhiveServerApplication.class, args);
-        System.out.println("Hi Bookhive");
     }
 }
