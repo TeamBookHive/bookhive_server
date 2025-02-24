@@ -1,29 +1,27 @@
 package bookhive.bookhiveserver.global.config;
 
+
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.servers.Server;
-import java.util.List;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class SwaggerConfig {
-
     @Bean
-    public OpenAPI openAPI() {
-
-        Server server = new Server();
-        server.setUrl("/");
-
-        Info info = new Info()
-                .title("BookHive API")
-                .version("v1.0.0")
-                .description("BookHive 백엔드 API 명세서");
-
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(info)
-                .servers(List.of(server));
-
+                .addSecurityItem(new SecurityRequirement().addList("Authorization"))
+                .components(new Components()
+                        .addSecuritySchemes("Authorization",
+                                new SecurityScheme()
+                                        .name("Authorization")
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)))
+                .info(new Info().title("BookHive API").version("1.0").description("BookHive 백엔드 API 명세서"));
     }
 }
