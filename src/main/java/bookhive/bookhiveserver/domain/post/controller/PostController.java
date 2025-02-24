@@ -1,17 +1,49 @@
 package bookhive.bookhiveserver.domain.post.controller;
 
+import bookhive.bookhiveserver.domain.post.dto.PostRequest;
+import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import bookhive.bookhiveserver.domain.post.entity.Post;
+import bookhive.bookhiveserver.domain.post.service.PostService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/posts")
+@RequestMapping("/api/posts")
 public class PostController {
+    private final PostService postService;
 
-    @GetMapping("/")
-    public String helloWorld() {
-        return "This is bookhive server";
+    @GetMapping("")
+    public ResponseEntity<List<PostResponse>> showPosts(@RequestHeader(value = "Authorization") String token) {
+        System.out.println("token:" + token);
+        List<PostResponse> posts = postService.getPosts(token);
+
+        return ResponseEntity.ok(posts);
+    }
+
+//    @PostMapping("")
+//    public ResponseEntity<PostResponse> createPost(@RequestHeader("Authorization") String token,
+//                                           @RequestBody PostRequest request) {
+//        Post post = postService.createPost(request.getContent(), token);
+//        return ResponseEntity.ok(new PostResponse(post));
+//    }
+
+    @PutMapping("/{postId}")
+    public String updatePost() {
+        return "updatePost";
+    }
+
+    @DeleteMapping("/{postId}")
+    public String deletePost() {
+        return "deletePost";
     }
 }
