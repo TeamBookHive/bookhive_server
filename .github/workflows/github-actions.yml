@@ -50,7 +50,6 @@ jobs:
             
             echo "${{ secrets.NCP_REGISTRY_PASSWORD }}" | docker login bookhive.kr.ncr.ntruss.com -u ${{ secrets.NCP_REGISTRY_USERNAME }} --password-stdin
             
-            
             docker pull bookhive.kr.ncr.ntruss.com/bookhive
             
             echo "${{ secrets.APPLICATION_ENV }}" | base64 --decode > /root/.env
