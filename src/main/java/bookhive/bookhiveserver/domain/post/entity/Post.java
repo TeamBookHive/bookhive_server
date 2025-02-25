@@ -49,7 +49,6 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
-    @Builder
     public Post(String content, List<PostTag> postTags, User user) {
         this.content = content;
         this.postTags = postTags != null ? postTags : new ArrayList<>();

@@ -6,6 +6,7 @@ import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.entity.PostTag;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
+import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
 
     public List<PostResponse> getPosts(String token) {
         User user = userRepository.findByToken(token)
@@ -30,14 +32,24 @@ public class PostService {
         return posts.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
-//    @Transactional
-//    public Post createPost(String content, String token) {
-//        User user = userRepository.findByToken(token)
-//                .orElseThrow(() -> new RuntimeException("잘못된 토큰입니다."));
-//        Post post = new Post(content, user);
-//
-//        return postRepository.save(post);
-//    }
+    @Transactional
+    public Post createPost(String content, List<Tag> tags, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("잘못된 토큰입니다."));
+
+        List<Tag> fetchedTags = tags.stream()
+                .map(tag -> tagRepository.findById(tag.getId())
+                        .orElseThrow(() -> new RuntimeException("존재하지 않는 태그 ID입니다: " + tag.getId())))
+                .toList();
+
+        Post post = new Post(content, new ArrayList<>(), user);
+
+        List<PostTag> postTags = fetchedTags.stream()
+                .map(tag -> new PostTag(post, tag))
+                .toList();
+
+        return postRepository.save(post);
+    }
 
     @Transactional
     public Post updatePost(String postId, String newContent, List<Tag> newTags, String token) {
@@ -64,7 +76,7 @@ public class PostService {
 
         currentPost.update(newContent, updatedPostTags);
 
-        return currentPost;
+        return postRepository.save(currentPost);
     }
 
     @Transactional
