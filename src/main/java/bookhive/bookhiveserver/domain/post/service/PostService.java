@@ -25,12 +25,12 @@ public class PostService {
         return posts.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
-//    @Transactional
-//    public Post createPost(String content, String token) {
-//        User user = userRepository.findByToken(token)
-//                .orElseThrow(() -> new RuntimeException("잘못된 토큰입니다."));
-//        Post post = new Post(content, user);
-//
-//        return postRepository.save(post);
-//    }
+    @Transactional
+    public Post createPost(String content, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("잘못된 토큰입니다."));
+        Post post = new Post(content, user);
+
+        return postRepository.save(post);
+    }
 }

@@ -30,12 +30,12 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-//    @PostMapping("")
-//    public ResponseEntity<PostResponse> createPost(@RequestHeader("Authorization") String token,
-//                                           @RequestBody PostRequest request) {
-//        Post post = postService.createPost(request.getContent(), token);
-//        return ResponseEntity.ok(new PostResponse(post));
-//    }
+    @PostMapping("")
+    public ResponseEntity<PostResponse> createPost(@RequestHeader("Authorization") String token,
+                                           @RequestBody PostRequest request) {
+        Post post = postService.createPost(request.getContent(), token);
+        return ResponseEntity.ok(new PostResponse(post));
+    }
 
     @PutMapping("/{postId}")
     public String updatePost() {
