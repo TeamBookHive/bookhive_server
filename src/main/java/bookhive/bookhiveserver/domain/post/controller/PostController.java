@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +24,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("")
-    public ResponseEntity<List<PostResponse>> showPosts(@RequestHeader(value = "Authorization") String token) {
-        System.out.println("token:" + token);
+    public ResponseEntity<List<PostResponse>> showPosts(@RequestHeader("Authorization") String token) {
         List<PostResponse> posts = postService.getPosts(token);
 
         return ResponseEntity.ok(posts);
@@ -34,16 +34,20 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@RequestHeader("Authorization") String token,
                                            @RequestBody PostRequest request) {
         Post post = postService.createPost(request.getContent(), token);
+
         return ResponseEntity.ok(new PostResponse(post));
     }
 
     @PutMapping("/{postId}")
-    public String updatePost() {
+    public String updatePost(@RequestHeader("Authorization") String token,
+                             @PathVariable String postId) {
         return "updatePost";
     }
 
     @DeleteMapping("/{postId}")
-    public String deletePost() {
-        return "deletePost";
+    public void deletePost(@RequestHeader("Authorization") String token,
+                             @PathVariable String postId) {
+
+        postService.deletePost(postId, token);
     }
 }
