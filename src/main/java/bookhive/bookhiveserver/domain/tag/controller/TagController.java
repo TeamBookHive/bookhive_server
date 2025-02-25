@@ -38,12 +38,10 @@ public class TagController {
         return ResponseEntity.ok(new TagResponse(tag));
     }
 
-    @PutMapping("/{tagId}")
-    public String updateTag(@RequestHeader("Authorization") String token,
-                            @RequestBody TagRequest request,
-                            @PathVariable String tagId) {
-
-        return "updateTag";
+    @PutMapping("")
+    public void updateTag(@RequestHeader("Authorization") String token,
+                            @RequestBody List<TagRequest> request) {
+        tagService.updateTag(request, token);
     }
 
     @DeleteMapping("/{tagId}")

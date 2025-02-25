@@ -1,5 +1,6 @@
 package bookhive.bookhiveserver.domain.tag.service;
 
+import bookhive.bookhiveserver.domain.tag.dto.TagRequest;
 import bookhive.bookhiveserver.domain.tag.dto.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
@@ -7,6 +8,7 @@ import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,26 @@ public class TagService {
         Tag tag = new Tag(value, user);
 
         return tagRepository.save(tag);
+    }
+
+    @Transactional
+    public void updateTag(List<TagRequest> tagRequests, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("잘못된 토큰입니다."));
+
+        for (TagRequest tagRequest : tagRequests) {
+            Long tagId = tagRequest.getId();
+            if (tagId != null) {
+                Tag tag = tagRepository.findById(tagId)
+                        .orElseThrow(() -> new RuntimeException("존재하지 않는 ID의 태그입니다:" + tagRequest.getId()));
+
+                if (!Objects.equals(tag.getValue(), tagRequest.getValue())) {
+                    tag.update(tagRequest.getValue());
+                }
+            } else {
+                tagRepository.save(new Tag(tagRequest.getValue(), user));
+            }
+        }
     }
 
     public void deleteTag(String tagId, String token) {

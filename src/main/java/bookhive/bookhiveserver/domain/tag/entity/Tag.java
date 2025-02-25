@@ -50,4 +50,8 @@ public class Tag {
         this.value = value;
         this.user = user;
     }
+
+    public void update(String newValue) {
+        this.value = newValue;
+    }
 }
