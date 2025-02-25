@@ -4,6 +4,7 @@ import bookhive.bookhiveserver.domain.tag.dto.TagRequest;
 import bookhive.bookhiveserver.domain.tag.dto.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.service.TagService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,8 +23,10 @@ public class TagController {
     private final TagService tagService;
 
     @GetMapping("")
-    public String showTags() {
-        return "showTags";
+    public ResponseEntity<List<TagResponse>> showTags(@RequestHeader("Authorization") String token) {
+        List<TagResponse> tags = tagService.getTags(token);
+
+        return ResponseEntity.ok(tags);
     }
 
     @PostMapping("")
