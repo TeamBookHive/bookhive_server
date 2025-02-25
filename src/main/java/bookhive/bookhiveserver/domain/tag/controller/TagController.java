@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,13 +39,18 @@ public class TagController {
     }
 
     @PutMapping("/{tagId}")
-    public String updateTag() {
+    public String updateTag(@RequestHeader("Authorization") String token,
+                            @RequestBody TagRequest request,
+                            @PathVariable String tagId) {
+
         return "updateTag";
     }
 
     @DeleteMapping("/{tagId}")
-    public String deleteTag() {
-        return "deleteTag";
+    public void deleteTag(@RequestHeader("Authorization") String token,
+                            @PathVariable String tagId) {
+
+        tagService.deleteTag(tagId, token);
     }
 
 }

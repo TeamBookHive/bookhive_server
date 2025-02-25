@@ -33,4 +33,18 @@ public class TagService {
 
         return tagRepository.save(tag);
     }
+
+    public void deleteTag(String tagId, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("잘못된 토큰입니다."));
+
+        Tag tag = tagRepository.findById(Long.valueOf(tagId))
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 태그입니다."));
+
+        if (!tag.getUser().equals(user)) {
+            throw new RuntimeException("해당 태그에 접근할 권한이 없습니다.");
+        }
+
+        tagRepository.deleteById(Long.valueOf(tagId));
+    }
 }
