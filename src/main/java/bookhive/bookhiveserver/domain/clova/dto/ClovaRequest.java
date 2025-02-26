@@ -15,10 +15,10 @@ public class ClovaRequest {
     private int topK = 0;
     private int maxTokens = 256;
     private double temperature = 0.2;
-    private double repeatPenalty = 1.5;
+    private double repeatPenalty = 0.1;
     private List<String> stopBefore = new ArrayList<>();
     private boolean includeAiFilters = true;
-    private int seed = 0;
+    private int seed = 1;
 
     public ClovaRequest(List<ClovaMessage> messages) {
         this.messages = messages;

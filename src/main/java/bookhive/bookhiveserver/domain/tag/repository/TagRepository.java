@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findAllByUserOrderByValue(User user) ;
+    List<Tag> findAllByUser(User user);
+    Tag findByValue(String value);
 }
