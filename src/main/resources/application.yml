@@ -10,3 +10,8 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
+
+clova:
+  url: ${CLOVA_URL}
+  api-key: ${CLOVA_API_KEY}
+  request-id: ${CLOVA_REQUEST_ID}
