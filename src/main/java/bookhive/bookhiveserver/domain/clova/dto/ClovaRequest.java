@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ClovaRequest {
     private List<ClovaMessage> messages;
-    private double topP = 0.8;
+    private double topP = 0.5;
     private int topK = 0;
     private int maxTokens = 256;
-    private double temperature = 0.2;
-    private double repeatPenalty = 0.1;
+    private double temperature = 0.1;
+    private double repeatPenalty = 1.0;
     private List<String> stopBefore = new ArrayList<>();
     private boolean includeAiFilters = true;
     private int seed = 1;
