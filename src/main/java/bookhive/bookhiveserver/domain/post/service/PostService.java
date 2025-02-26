@@ -67,6 +67,8 @@ public class PostService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST.toString() + postId);
         }
 
+
+
         Set<Long> currentTagIds = currentPost.getPostTags().stream()
                 .map(postTag -> postTag.getTag().getId())
                 .collect(Collectors.toSet());
@@ -78,10 +80,14 @@ public class PostService {
                 .collect(Collectors.toList());
 
         // 새로운 태그들 중 기존에 없던 태그 추가하기
+        // 존재하는 태그인지 체크하기
         // 해당 유저에게 접근 권한이 있는 태그인지 체크하기
         for (Tag tag : newTags) {
-            if (!currentTagIds.contains(tag.getId()))
+            if (currentTagIds.contains(tag.getId()))
                 continue;
+
+            tagRepository.findById(tag.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tag.getId()));
 
             if (!Objects.equals(tag.getUser(), user)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_TAG.toString() + tag.getId());
