@@ -1,11 +1,5 @@
 package bookhive.bookhiveserver.domain.post.service;
 
-import static bookhive.bookhiveserver.global.exception.ErrorMessage.INVALID_POST;
-import static bookhive.bookhiveserver.global.exception.ErrorMessage.INVALID_TAG;
-import static bookhive.bookhiveserver.global.exception.ErrorMessage.INVALID_TOKEN;
-import static bookhive.bookhiveserver.global.exception.ErrorMessage.UNAUTHORIZED_POST;
-import static bookhive.bookhiveserver.global.exception.ErrorMessage.UNAUTHORIZED_TAG;
-
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.entity.PostTag;
@@ -14,6 +8,7 @@ import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +16,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +29,8 @@ public class PostService {
 
     public List<PostResponse> getPosts(String token) {
         User user = userRepository.findByToken(token)
-                        .orElseThrow(() -> new RuntimeException(INVALID_TOKEN.toString()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+
         List<Post> posts = postRepository.findByUserOrderByCreatedAtDesc(user);
 
         return posts.stream().map(PostResponse::new).collect(Collectors.toList());
@@ -41,11 +39,11 @@ public class PostService {
     @Transactional
     public Post createPost(String content, List<Tag> tags, String token) {
         User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException(INVALID_TOKEN.toString()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
         List<Tag> fetchedTags = tags.stream()
                 .map(tag -> tagRepository.findById(tag.getId())
-                        .orElseThrow(() -> new RuntimeException(INVALID_TAG.toString() + tag.getId())))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tag.getId())))
                 .toList();
 
         Post post = new Post(content, new ArrayList<>(), user);
@@ -60,13 +58,13 @@ public class PostService {
     @Transactional
     public Post updatePost(String postId, String newContent, List<Tag> newTags, String token) {
         User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException(INVALID_TOKEN.toString()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
         Post currentPost = postRepository.findById(Long.valueOf(postId))
-                .orElseThrow(() -> new RuntimeException(INVALID_POST.toString() + postId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST.toString() + postId));
 
         if (!Objects.equals(currentPost.getUser(), user)) {
-            throw new RuntimeException(UNAUTHORIZED_POST.toString() + postId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST.toString() + postId);
         }
 
         Set<Long> currentTagIds = currentPost.getPostTags().stream()
@@ -86,7 +84,7 @@ public class PostService {
                 continue;
 
             if (!Objects.equals(tag.getUser(), user)) {
-                throw new RuntimeException(UNAUTHORIZED_TAG.toString() + tag.getId());
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_TAG.toString() + tag.getId());
             }
 
             updatedPostTags.add(new PostTag(currentPost, tag));
@@ -100,13 +98,13 @@ public class PostService {
     @Transactional
     public void deletePost(String postId, String token) {
         User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException(INVALID_TOKEN.toString()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
         Post post = postRepository.findById(Long.valueOf(postId))
-                .orElseThrow(() -> new RuntimeException(INVALID_POST.toString() + postId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST.toString() + postId));
 
         if (!Objects.equals(post.getUser(), user)) {
-            throw new RuntimeException(UNAUTHORIZED_POST.toString() + postId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST.toString() + postId);
         }
 
         postRepository.deleteById(Long.valueOf(postId));
