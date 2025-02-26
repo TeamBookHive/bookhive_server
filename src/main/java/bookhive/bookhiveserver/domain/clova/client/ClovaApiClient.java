@@ -22,9 +22,6 @@ public class ClovaApiClient {
     @Value("${clova.api-key}")
     private String clovaApiKey;
 
-    @Value("${clova.request-id}")
-    private String clovaRequestId;
-
     public String callFix(String content) {
 
         // system 프롬프트 주입
@@ -42,10 +39,33 @@ public class ClovaApiClient {
 
         ClovaRequest request = new ClovaRequest(messages);
 
+        return callApiByWebClient(request);
+    }
+
+    public String callRecommend(String content, String originTags) {
+
+        // system 프롬프트 주입
+        List<ClovaMessage> messages = List.of(
+                new ClovaMessage("system",
+                        "너는 지금 OCR 기술로 인식된 책 구절들 데이터를 바탕으로, 이와 어울리는 태그를 추천해 줘야 해.\n" +
+                                "기존에 존재하는 태그들이 주어질 거야. 기존에 존재하는 태그들로는 " + originTags + "가 있어.\n" +
+                                "첫 번째로, 기존 태그들과 중복되지 않는 새로운 태그 3개를 반드시 추천해야 해. 새로운 태그의 개수가 3개 미만이거나, 3개를 초과해서는 안 돼.\n" +
+                                "두 번째로, 기존 태그들 중 어울리는 태그가 있다면 이 중에서 최대 2개를 선택해. 어울리는 태그가 없다면 선택하지 않아도 돼.\n\n" +
+                                "너의 대답은 반드시 기존 태그 2개 이하 + 새로운 태그 3개로 구성되어야 해.\n" +
+                                "대답 형식은 반드시 \"태그명, 태그명, 태그명, 태그명\"이어야 해.\n"
+                ),
+                new ClovaMessage("user", content)
+        );
+
+        ClovaRequest request = new ClovaRequest(messages);
+
+        return callApiByWebClient(request);
+    }
+
+    private String callApiByWebClient(ClovaRequest request) {
         return webClient.post()
                 .uri(clovaUrl)
                 .header("Authorization", clovaApiKey)
-                .header("X-NCP-CLOVASTUDIO-REQUEST-ID", clovaRequestId)
                 .header("Content-Type", "application/json")
                 .bodyValue(request)
                 .retrieve()
