@@ -5,7 +5,6 @@ import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.entity.PostTag;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;
 import bookhive.bookhiveserver.domain.tag.dto.TagRequest;
-import bookhive.bookhiveserver.domain.tag.dto.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
