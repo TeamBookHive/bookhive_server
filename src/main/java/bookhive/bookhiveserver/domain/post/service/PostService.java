@@ -47,7 +47,7 @@ public class PostService {
 
         for (TagRequest tag : tags) {
             Long tagId = tag.getId();
-            if (tagId == null) {
+            if (tagId == null) { // 태그가 존재하지 않는다면 생성하는 로직 추가
                 Tag newTag = tagRepository.save(new Tag(tag.getValue(), user));
                 fetchedTags.add(newTag);
             }
