@@ -36,6 +36,8 @@ public class TagService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
         Tag tag = new Tag(value, user);
 
+        // 태그 중복 로직 검증 (단, 해당 API는 현재 미사용이므로 보류)
+
         return tagRepository.save(tag);
     }
 
