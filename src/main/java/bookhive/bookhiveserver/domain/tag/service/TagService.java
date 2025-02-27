@@ -8,8 +8,11 @@ import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,8 @@ public class TagService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
         Tag tag = new Tag(value, user);
 
+        // 태그 중복 로직 검증 (단, 해당 API는 현재 미사용이므로 보류)
+
         return tagRepository.save(tag);
     }
 
@@ -44,20 +49,36 @@ public class TagService {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
+        // 성능 개선: 사용자의 태그를 미리 조회해두고, 해당 요청에서 생성되는 태그는 직접 추가
+        List<Tag> currentTags = tagRepository.findAllByUser(user);
+        Map<Long, Tag> tagById = currentTags.stream().collect(Collectors.toMap(Tag::getId, tag -> tag)); // 기존 태그를 위해
+        Set<String> tagValues = currentTags.stream().map(Tag::getValue).collect(Collectors.toSet()); // 새로운 태그를 위해
+
+        // 요청 내에서 중복된 value 방지
+        Set<String> newTagsInRequest = new HashSet<>();
+
         for (TagRequest tagRequest : tagRequests) {
             Long tagId = tagRequest.getId();
-            if (tagId != null) {
-                Tag tag = tagRepository.findById(tagId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagRequest.getId()));
+            String newValue = tagRequest.getValue();
 
-                if (!Objects.equals(tag.getValue(), tagRequest.getValue())) {
-                    tag.update(tagRequest.getValue());
+            if (tagId != null) {
+                Tag tag = tagById.get(tagId);
+                if (tag == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagRequest.getId());
+                }
+
+                if (!Objects.equals(tag.getValue(), newValue)) {
+                    tag.update(newValue);
                 }
             } else {
-                tagRepository.save(new Tag(tagRequest.getValue(), user));
+                if (!tagValues.contains(newValue) && newTagsInRequest.add(newValue)) {
+                    tagRepository.save(new Tag(newValue, user));
+                    tagValues.add(newValue);
+                }
             }
         }
     }
+
 
     public void deleteTag(String tagId, String token) {
         User user = userRepository.findByToken(token)

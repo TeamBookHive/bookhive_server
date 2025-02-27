@@ -12,6 +12,7 @@ import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,12 +42,17 @@ public class ContentService {
         return clovaApiClient.callRecommend(request.getContent(), originTags);
     }
 
-    public List<RecommendTagResponse> createRecommendTagList(String tagValues) {
+    public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
         List<String> tagValuesList =  Arrays.asList(tagValues.split(", "));
 
+        List<Tag> tagList = tagRepository.findByValueInAndUser(tagValuesList, user);
+        Map<String, Tag> tagMap = tagList.stream().collect(Collectors.toMap(Tag::getValue, tag -> tag));
+
         for (String tagValue : tagValuesList) {
-            Tag target = tagRepository.findByValue(tagValue);
+            Tag target = tagMap.get(tagValue);
             if (target == null) {
                 recommendTags.add(new RecommendTagResponse(null, tagValue));
             } else {

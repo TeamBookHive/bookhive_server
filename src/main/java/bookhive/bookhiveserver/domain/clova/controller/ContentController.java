@@ -29,7 +29,7 @@ public class ContentController {
     public ResponseEntity<List<RecommendTagResponse>> recommend(@RequestHeader("Authorization") String token,
                                                        @RequestBody ContentRequest request) {
         String tagValues = contentService.callClovaApiToRecommend(request, token);
-        List<RecommendTagResponse> tags = contentService.createRecommendTagList(tagValues);
+        List<RecommendTagResponse> tags = contentService.createRecommendTagList(tagValues, token);
 
         return ResponseEntity.ok(tags);
     }

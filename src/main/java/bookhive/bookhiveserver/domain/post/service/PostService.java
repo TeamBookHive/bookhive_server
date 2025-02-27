@@ -12,6 +12,7 @@ import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
         List<Tag> fetchedTags = new ArrayList<>();
+        Set<Long> currentTagIds = new HashSet<>();
 
         for (TagRequest tag : tags) {
             Long tagId = tag.getId();
@@ -51,9 +53,12 @@ public class PostService {
                 fetchedTags.add(newTag);
             }
             else {
-                Tag fetchedTag = tagRepository.findById(tagId)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagId));
-                fetchedTags.add(fetchedTag);
+                if (!currentTagIds.contains(tagId)) {
+                    Tag fetchedTag = tagRepository.findById(tagId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagId));
+                    fetchedTags.add(fetchedTag);
+                    currentTagIds.add(fetchedTag.getId());
+                }
             }
         }
 
