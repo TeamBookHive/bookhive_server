@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.post.dto;
 
-import bookhive.bookhiveserver.domain.tag.entity.Tag;
+import bookhive.bookhiveserver.domain.tag.dto.TagRequest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 public class PostRequest {
     private String content;
-    private List<Tag> tags = new ArrayList<>();
+    private List<TagRequest> tags = new ArrayList<>();
 }
