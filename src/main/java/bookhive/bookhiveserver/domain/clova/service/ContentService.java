@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,12 @@ public class ContentService {
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+
+        // 응답 검증 로직 추가
+        if (!validateTagResponse(tagValues)){
+            return new ArrayList<>();
+        }
+
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
         List<String> tagValuesList =  Arrays.asList(tagValues.split(", "));
 
@@ -61,5 +68,11 @@ public class ContentService {
         }
 
         return recommendTags;
+    }
+
+    public boolean validateTagResponse(String response) {
+        final Pattern TAG_PATTERN = Pattern.compile("^([가-힣a-zA-Z0-9]+(, [가-힣a-zA-Z0-9]+)*)$");
+
+        return TAG_PATTERN.matcher(response).matches();
     }
 }
