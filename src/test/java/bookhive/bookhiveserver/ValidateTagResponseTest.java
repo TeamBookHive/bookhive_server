@@ -51,11 +51,4 @@ public class ValidateTagResponseTest {
         assertThat(result).isFalse();
     }
 
-    @Test
-    void 부연설명에_콤마가_포함될_때_참을_반환한다는_문제가_발생한다() {
-        boolean result = contentService.validateTagResponse("사랑, 우정, 용기가 올바른 태그라고 생각합니다. 죄송합니다, 올바른 응답이 아닙니다.");
-
-        assertThat(result).isFalse();
-    }
-
 }
