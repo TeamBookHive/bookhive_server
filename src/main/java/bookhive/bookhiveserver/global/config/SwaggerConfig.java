@@ -1,6 +1,7 @@
 package bookhive.bookhiveserver.global.config;
 
-
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -10,10 +11,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+@OpenAPIDefinition(
+    servers = {
+            @Server(url = "https://bookchive.com", description = "production"),
+            @Server(url = "http://localhost:8080", description = "develop")
+    })
 @Configuration
 public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
+
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList("Authorization"))
                 .components(new Components()
