@@ -49,7 +49,7 @@ public class ContentService {
 
         // 응답 검증 로직 추가
         if (!validateTagResponse(tagValues)){
-            return new ArrayList<>();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessage.INVALID_API_RESPONSE.toString());
         }
 
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
