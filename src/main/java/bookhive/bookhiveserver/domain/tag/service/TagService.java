@@ -8,6 +8,7 @@ import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class TagService {
     }
 
     @Transactional
-    public void updateTag(List<TagRequest> tagRequests, String token) {
+    public List<Tag> updateTag(List<TagRequest> tagRequests, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
@@ -64,6 +65,9 @@ public class TagService {
         // 요청 내에서 중복된 value 방지
         Set<String> newTagsInRequest = new HashSet<>();
 
+        // 새로 추가된 태그만 클라이언트에게 반환
+        List<Tag> addedTags = new ArrayList<>();
+
         for (TagRequest tagRequest : tagRequests) {
             Long tagId = tagRequest.getId();
             String newValue = tagRequest.getValue();
@@ -79,11 +83,14 @@ public class TagService {
                 }
             } else {
                 if (!tagValues.contains(newValue) && newTagsInRequest.add(newValue)) {
-                    tagRepository.save(new Tag(newValue, user));
+                    Tag newTag = tagRepository.save(new Tag(newValue, user));
                     tagValues.add(newValue);
+                    addedTags.add(newTag);
                 }
             }
         }
+
+        return addedTags;
     }
 
 
