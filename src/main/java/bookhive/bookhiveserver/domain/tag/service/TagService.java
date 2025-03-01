@@ -49,6 +49,13 @@ public class TagService {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
+        // 개별 태그 길이 검사
+        tagRequests.stream()
+            .filter(t -> t.getValue().length() > 10)
+            .findFirst()
+            .ifPresent(t -> {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString() + t.getValue());
+        });
+
         // 성능 개선: 사용자의 태그를 미리 조회해두고, 해당 요청에서 생성되는 태그는 직접 추가
         List<Tag> currentTags = tagRepository.findAllByUser(user);
         Map<Long, Tag> tagById = currentTags.stream().collect(Collectors.toMap(Tag::getId, tag -> tag)); // 기존 태그를 위해

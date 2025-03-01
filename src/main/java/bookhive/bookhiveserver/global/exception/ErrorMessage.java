@@ -1,6 +1,7 @@
 package bookhive.bookhiveserver.global.exception;
 
 public enum ErrorMessage {
+    TOO_MANY_LETTERS("[ERROR] 글자수를 초과하였습니다."),
     INVALID_TOKEN("[ERROR] 잘못된 토큰입니다. "),
     INVALID_POST("[ERROR] 존재하지 않는 게시글입니다. "),
     INVALID_TAG("[ERROR] 존재하지 않는 태그입니다. "),

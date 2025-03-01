@@ -43,6 +43,9 @@ public class PostService {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
+        if (content.length() > 1000)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString());
+
         List<Tag> fetchedTags = new ArrayList<>();
         Set<Long> currentTagIds = new HashSet<>();
 
@@ -75,6 +78,9 @@ public class PostService {
     public Post updatePost(String postId, String newContent, List<TagRequest> newTags, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+
+        if (newContent.length() > 1000)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString());
 
         Post currentPost = postRepository.findById(Long.valueOf(postId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST.toString() + postId));
