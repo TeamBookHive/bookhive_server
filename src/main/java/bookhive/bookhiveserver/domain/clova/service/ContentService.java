@@ -3,7 +3,6 @@ package bookhive.bookhiveserver.domain.clova.service;
 import bookhive.bookhiveserver.domain.clova.client.ClovaApiClient;
 import bookhive.bookhiveserver.domain.clova.dto.ContentRequest;
 import bookhive.bookhiveserver.domain.clova.dto.RecommendTagResponse;
-import bookhive.bookhiveserver.domain.tag.dto.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -49,7 +48,7 @@ public class ContentService {
 
         // 응답 검증 로직 추가
         if (!validateTagResponse(tagValues)){
-            return new ArrayList<>();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessage.INVALID_API_RESPONSE.toString());
         }
 
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
@@ -71,7 +70,7 @@ public class ContentService {
     }
 
     public boolean validateTagResponse(String response) {
-        final Pattern TAG_PATTERN = Pattern.compile("^([가-힣a-zA-Z0-9]+(, [가-힣a-zA-Z0-9]+)*)$");
+        final Pattern TAG_PATTERN = Pattern.compile("^([가-힣a-zA-Z0-9][가-힣a-zA-Z0-9 ]*(, [가-힣a-zA-Z0-9][가-힣a-zA-Z0-9 ]*)*)$");
 
         return TAG_PATTERN.matcher(response).matches();
     }

@@ -1,6 +1,5 @@
 package bookhive.bookhiveserver.domain.post.entity;
 
-import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,12 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -36,6 +34,7 @@ public class Post {
     private Long id;
 
     @Column(name = "content", nullable = false)
+    @Size(min = 1, max = 1000)
     private String content;
 
     @CreatedDate

@@ -51,4 +51,25 @@ public class ValidateTagResponseTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void 공백을_포함한_태그도_사용할_수_있다() {
+        boolean result = contentService.validateTagResponse("인간 관계, 데이터 사이언스, 고양이");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 공백_포함_시_발생할_수_있는_오류가_있다() {
+        boolean result = contentService.validateTagResponse("인간 관계, 데이터 사이언스, 고양이입니다");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 공백을_두_번_이상_포함한_태그도_사용할_수_있다() {
+        boolean result = contentService.validateTagResponse("템플릿 메서드 패턴, 데이터 사이언스");
+
+        assertThat(result).isTrue();
+    }
+
 }
