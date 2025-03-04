@@ -1,7 +1,7 @@
 package bookhive.bookhiveserver.domain.clova.controller;
 
-import bookhive.bookhiveserver.domain.clova.dto.ContentRequest;
-import bookhive.bookhiveserver.domain.clova.dto.RecommendTagResponse;
+import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
+import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.clova.service.ContentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

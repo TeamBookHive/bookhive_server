@@ -1,7 +1,7 @@
 package bookhive.bookhiveserver.domain.tag.service;
 
-import bookhive.bookhiveserver.domain.tag.dto.TagRequest;
-import bookhive.bookhiveserver.domain.tag.dto.TagResponse;
+import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
+import bookhive.bookhiveserver.domain.tag.dto.response.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;

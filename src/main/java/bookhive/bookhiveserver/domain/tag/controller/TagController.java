@@ -1,11 +1,10 @@
 package bookhive.bookhiveserver.domain.tag.controller;
 
-import bookhive.bookhiveserver.domain.tag.dto.TagRequest;
-import bookhive.bookhiveserver.domain.tag.dto.TagResponse;
+import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
+import bookhive.bookhiveserver.domain.tag.dto.response.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.service.TagService;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
