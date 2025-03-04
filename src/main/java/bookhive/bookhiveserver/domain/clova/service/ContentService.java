@@ -1,8 +1,8 @@
 package bookhive.bookhiveserver.domain.clova.service;
 
 import bookhive.bookhiveserver.domain.clova.client.ClovaApiClient;
-import bookhive.bookhiveserver.domain.clova.dto.ContentRequest;
-import bookhive.bookhiveserver.domain.clova.dto.RecommendTagResponse;
+import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
+import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -46,12 +46,16 @@ public class ContentService {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
-        // 응답 검증 로직 추가
+        List<RecommendTagResponse> recommendTags = new ArrayList<>();
+
+        // 응답 검증 로직: 응답이 잘못된 형식이면 기본 추천 태그 리스트를 반환한다.
         if (!validateTagResponse(tagValues)){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessage.INVALID_API_RESPONSE.toString());
+            recommendTags.add(new RecommendTagResponse(null, "일상"));
+            recommendTags.add(new RecommendTagResponse(null, "기타"));
+
+            return recommendTags;
         }
 
-        List<RecommendTagResponse> recommendTags = new ArrayList<>();
         List<String> tagValuesList =  Arrays.asList(tagValues.split(", "));
 
         List<Tag> tagList = tagRepository.findByValueInAndUser(tagValuesList, user);
