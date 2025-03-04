@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.tag.dto;
+package bookhive.bookhiveserver.domain.tag.dto.request;
 
 import lombok.Getter;
 

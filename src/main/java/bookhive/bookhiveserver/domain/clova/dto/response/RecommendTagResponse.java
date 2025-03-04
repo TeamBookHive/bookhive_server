@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.clova.dto;
+package bookhive.bookhiveserver.domain.clova.dto.response;
 
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package bookhive.bookhiveserver.domain.clova.client;
 
-import bookhive.bookhiveserver.domain.clova.dto.ClovaMessage;
-import bookhive.bookhiveserver.domain.clova.dto.ClovaRequest;
-import bookhive.bookhiveserver.domain.clova.dto.ClovaResponse;
+import bookhive.bookhiveserver.domain.clova.dto.request.ClovaMessage;
+import bookhive.bookhiveserver.domain.clova.dto.request.ClovaRequest;
+import bookhive.bookhiveserver.domain.clova.dto.response.ClovaResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

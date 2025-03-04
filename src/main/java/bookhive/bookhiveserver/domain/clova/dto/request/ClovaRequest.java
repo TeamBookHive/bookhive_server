@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.clova.dto;
+package bookhive.bookhiveserver.domain.clova.dto.request;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.clova.dto;
+package bookhive.bookhiveserver.domain.clova.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

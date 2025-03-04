@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.tag.dto;
+package bookhive.bookhiveserver.domain.tag.dto.response;
 
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import java.time.LocalDateTime;
