@@ -39,11 +39,11 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public String updatePost(@RequestHeader("Authorization") String token,
+    public ResponseEntity<PostResponse> updatePost(@RequestHeader("Authorization") String token,
                              @RequestBody PostRequest request,
                              @PathVariable String postId) {
         Post post = postService.updatePost(postId, request.getContent(), request.getTags(), token);
-        return "updatePost";
+        return ResponseEntity.ok(new PostResponse(post));
     }
 
     @DeleteMapping("/{postId}")
