@@ -1,6 +1,7 @@
 package bookhive.bookhiveserver.domain.clova.controller;
 
 import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
+import bookhive.bookhiveserver.domain.clova.dto.response.FixedSentenceResponse;
 import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.clova.service.ContentService;
 import java.util.List;
@@ -19,10 +20,10 @@ public class ContentController {
     private final ContentService contentService;
 
     @PostMapping("/fix-sentence")
-    public ResponseEntity<String> correct(@RequestBody ContentRequest request) {
+    public ResponseEntity<FixedSentenceResponse> correct(@RequestBody ContentRequest request) {
         String content = contentService.callClovaApiToFix(request);
 
-        return ResponseEntity.ok(content);
+        return ResponseEntity.ok(new FixedSentenceResponse(content));
     }
 
     @PostMapping("/recommended-tags")
