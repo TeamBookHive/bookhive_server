@@ -116,6 +116,9 @@ public class PostService {
             updatedPostTags.add(new PostTag(currentPost, tag));
         }
 
+        currentPost.getPostTags().clear();
+        currentPost.getPostTags().addAll(updatedPostTags);
+
         currentPost.update(newContent, updatedPostTags);
 
         return postRepository.save(currentPost);
