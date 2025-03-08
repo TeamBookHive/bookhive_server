@@ -4,6 +4,7 @@ import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.entity.PostTag;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;
+import bookhive.bookhiveserver.domain.post.repository.PostTagRepository;
 import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
@@ -28,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
 
     public List<PostResponse> getPosts(String token) {
         User user = userRepository.findByToken(token)
@@ -89,23 +91,9 @@ public class PostService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST.toString() + postId);
         }
 
-        Set<Long> currentTagIds = currentPost.getPostTags().stream()
-                .map(postTag -> postTag.getTag().getId())
-                .collect(Collectors.toSet());
+        postTagRepository.deleteByPostId(Long.valueOf(postId));
 
-        // 새로운 태그들 중 기존에 존재하던 태그 남기기
-        List<PostTag> updatedPostTags = currentPost.getPostTags().stream()
-                .filter(postTag -> newTags.stream()
-                        .anyMatch(tag -> tag.getId() != null && tag.getId().equals(postTag.getTag().getId()))) // ✅ NPE 방지
-                .collect(Collectors.toList());
-
-        // 새로운 태그들 중 기존에 없던 태그 추가하기
-        // 존재하는 태그인지 체크하기
-        // 해당 유저에게 접근 권한이 있는 태그인지 체크하기
         for (TagRequest tagRequest : newTags) {
-            if (currentTagIds.contains(tagRequest.getId()))
-                continue;
-
             Tag tag = tagRepository.findById(tagRequest.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagRequest.getId()));
 
@@ -113,16 +101,13 @@ public class PostService {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_TAG.toString() + tagRequest.getId());
             }
 
-            updatedPostTags.add(new PostTag(currentPost, tag));
+            postTagRepository.insertPostTag(Long.valueOf(postId), tagRequest.getId());
         }
 
-        currentPost.getPostTags().clear();
-        currentPost.getPostTags().addAll(updatedPostTags);
-
-        currentPost.update(newContent, updatedPostTags);
-
+        currentPost.update(newContent);
         return postRepository.save(currentPost);
     }
+
 
     @Transactional
     public void deletePost(String postId, String token) {
