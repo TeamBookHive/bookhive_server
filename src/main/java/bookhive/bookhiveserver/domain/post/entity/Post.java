@@ -33,7 +33,7 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 1000)
     @Size(min = 1, max = 1000)
     private String content;
 

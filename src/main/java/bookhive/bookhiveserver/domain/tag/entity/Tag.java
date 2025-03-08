@@ -33,7 +33,7 @@ public class Tag {
     @Column(name = "tag_id")
     private Long id;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value", nullable = false, length = 10)
     @Size(min = 1, max = 10)
     private String value;
 
