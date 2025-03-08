@@ -13,18 +13,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ClovaApiClient {
+public class ClovaContentApiClient {
     private final WebClient webClient;
 
-    @Value("${clova.url}")
+    @Value("${clova.content-url}")
     private String clovaUrl;
 
     @Value("${clova.api-key}")
     private String clovaApiKey;
 
-    public String callFix(String content) {
+    public String correctErrors(String content) {
 
-        // system 프롬프트 주입
         List<ClovaMessage> messages = List.of(
                 new ClovaMessage("system",
                         "# 역할\n"
@@ -61,9 +60,8 @@ public class ClovaApiClient {
         return callApiByWebClient(request);
     }
 
-    public String callRecommend(String content, String originTags) {
+    public String recommendTags(String content, String originTags) {
 
-        // system 프롬프트 주입
         List<ClovaMessage> messages = List.of(
                 new ClovaMessage("system",
                         "당신은 OCR 기술로 인식된 책 문장 데이터를 바탕으로 어울리는 태그를 추천하는 AI입니다. 다음 제약 사항을 바탕으로 가장 적절한 태그들을 추천해 주세요.\n\n"
@@ -82,6 +80,7 @@ public class ClovaApiClient {
 
         return callApiByWebClient(request);
     }
+
 
     private String callApiByWebClient(ClovaRequest request) {
         return webClient.post()
