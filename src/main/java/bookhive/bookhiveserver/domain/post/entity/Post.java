@@ -54,9 +54,7 @@ public class Post {
         this.user = user;
     }
 
-    public void update(String newContent, List<PostTag> updatedPostTags) {
+    public void update(String newContent) {
         this.content = newContent;
-        this.postTags.clear();
-        this.postTags.addAll(updatedPostTags);
     }
 }
