@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.clova.service;
 
-import bookhive.bookhiveserver.domain.clova.client.ClovaApiClient;
+import bookhive.bookhiveserver.domain.clova.client.ClovaContentApiClient;
 import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
 import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
@@ -22,12 +22,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
-    private final ClovaApiClient clovaApiClient;
+    private final ClovaContentApiClient clovaContentApiClient;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
     public String callClovaApiToFix(ContentRequest request) {
-        return clovaApiClient.callFix(request.getContent());
+        return clovaContentApiClient.correctErrors(request.getContent());
     }
 
     public String callClovaApiToRecommend(ContentRequest request, String token) {
@@ -39,7 +39,7 @@ public class ContentService {
 
         String originTags = String.join(", ", tagNames);
 
-        return clovaApiClient.callRecommend(request.getContent(), originTags);
+        return clovaContentApiClient.recommendTags(request.getContent(), originTags);
     }
 
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {

@@ -12,6 +12,7 @@ spring:
       ddl-auto: validate
 
 clova:
-  url: ${CLOVA_URL}
+  search-url: ${CLOVA_SEARCH_URL}
+  content-url: ${CLOVA_CONTENT_URL}
   api-key: ${CLOVA_API_KEY}
   request-id: ${CLOVA_REQUEST_ID}
