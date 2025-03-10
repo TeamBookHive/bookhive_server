@@ -76,6 +76,6 @@ public class ContentService {
     public boolean validateTagResponse(String response) {
         final Pattern TAG_PATTERN = Pattern.compile("^([가-힣a-zA-Z0-9][가-힣a-zA-Z0-9 ]*(, [가-힣a-zA-Z0-9][가-힣a-zA-Z0-9 ]*)*)$");
 
-        return TAG_PATTERN.matcher(response).matches();
+        return !response.equals("태그명, 태그명, 태그명") && TAG_PATTERN.matcher(response).matches();
     }
 }
