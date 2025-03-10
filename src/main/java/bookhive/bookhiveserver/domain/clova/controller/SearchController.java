@@ -1,6 +1,7 @@
 package bookhive.bookhiveserver.domain.clova.controller;
 
 import bookhive.bookhiveserver.domain.clova.dto.request.SearchRequest;
+import bookhive.bookhiveserver.domain.clova.dto.response.SearchResponse;
 import bookhive.bookhiveserver.domain.clova.dto.response.SearchTypeResponse;
 import bookhive.bookhiveserver.domain.clova.service.SearchService;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
@@ -23,13 +24,14 @@ public class SearchController {
     private final SearchService searchService;
 
     @PostMapping("/ai-search-posts")
-    public ResponseEntity<List<PostResponse>> search(@RequestHeader(value = "Authorization") String token,
+    public ResponseEntity<SearchResponse> search(@RequestHeader(value = "Authorization") String token,
                                            @RequestBody SearchRequest request) {
 
         try {
             log.info( "키워드 검색 시작");
             SearchTypeResponse searchType = searchService.checkSearchType(request);
             List<PostResponse> posts;
+            SearchResponse searchResults;
 
             System.out.println(searchType.getIsSearch());
             System.out.println(searchType.getKeyword());
@@ -37,20 +39,24 @@ public class SearchController {
             if (Boolean.parseBoolean(searchType.getIsSearch())) {
                 log.info( "키워드 검색");
                 posts = searchService.searchByKeyword(searchType.getKeyword(), token);
+                searchResults = new SearchResponse(true, posts);
             } else {
                 log.info( "AI 검색");
                 posts = searchService.searchByAI(request, token);
+                searchResults = new SearchResponse(true, posts);
             }
 
             if (posts.isEmpty()) {
                 log.info("맞는 결과 없음");
                 posts = searchService.getRandomPosts(token);
+                searchResults = new SearchResponse(false, posts);
             }
 
-            return ResponseEntity.ok(posts);
+            return ResponseEntity.ok(searchResults);
         } catch (Exception e) {
             List<PostResponse> randomPosts = searchService.getRandomPosts(token);
-            return ResponseEntity.ok(randomPosts);
+
+            return ResponseEntity.ok(new SearchResponse(false, randomPosts));
         }
     }
 }
