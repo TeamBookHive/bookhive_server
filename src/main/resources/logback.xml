@@ -1,0 +1,25 @@
+<configuration>
+
+    <appender name="CATALINA" class="ch.qos.logback.core.FileAppender">
+<!--        아래 경로는 배포 환경에서 사용하는 경로임에 유의-->
+        <file>/var/log/tomcat8/catalina.out</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="bookhive.bookhiveserver.global.interceptor" level="info">
+        <appender-ref ref="CATALINA" />
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

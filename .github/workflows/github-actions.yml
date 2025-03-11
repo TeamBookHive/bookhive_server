@@ -59,4 +59,7 @@ jobs:
               docker stop bookhive && docker rm bookhive
             fi
 
-            docker run -d --name bookhive --env-file /root/.env -p 8080:8080 --restart on-failure:3 bookhive.kr.ncr.ntruss.com/bookhive
+            docker run -d --name bookhive \
+              --env-file /root/.env -p 8080:8080 --restart on-failure:3 \
+              -v /var/log/tomcat8/catalina.out:/var/log/tomcat8/catalina.out \
+              bookhive.kr.ncr.ntruss.com/bookhive

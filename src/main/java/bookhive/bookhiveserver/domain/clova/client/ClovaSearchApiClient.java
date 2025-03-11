@@ -85,7 +85,7 @@ public class ClovaSearchApiClient {
                             .map(clovaResponse -> clovaResponse.getResult().getMessage().getContent())
                             .block();
 
-        System.out.println("키워드 검색 결과: \n" + jsonString);
+//        System.out.println("키워드 검색 결과: \n" + jsonString);
 
         try {
             return objectMapper.readValue(jsonString, SearchTypeResponse.class);
@@ -152,7 +152,7 @@ public class ClovaSearchApiClient {
                             .map(clovaResponse -> clovaResponse.getResult().getMessage().getContent())
                             .block();
 
-        System.out.println("AI 검색 결과: \n" + jsonString);
+//        System.out.println("AI 검색 결과: \n" + jsonString);
 
         try {
             return objectMapper.readValue(jsonString, KeywordsResponse.class);
