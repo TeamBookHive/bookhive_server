@@ -33,27 +33,26 @@ public class SearchController {
             List<PostResponse> posts;
             SearchResponse searchResults;
 
-            System.out.println(searchType.getIsSearch());
-            System.out.println(searchType.getKeyword());
-
             if (Boolean.parseBoolean(searchType.getIsSearch())) {
-                log.info( "키워드 검색");
+                log.info("키워드 검색 시작");
                 posts = searchService.searchByKeyword(searchType.getKeyword(), token);
-                searchResults = new SearchResponse(true, posts);
             } else {
-                log.info( "AI 검색");
+                log.info("AI 검색 시작");
                 posts = searchService.searchByAI(request, token);
-                searchResults = new SearchResponse(true, posts);
             }
 
             if (posts.isEmpty()) {
                 log.info("맞는 결과 없음");
                 posts = searchService.getRandomPosts(token);
-                searchResults = new SearchResponse(false, posts);
+
+                return ResponseEntity.ok(new SearchResponse(false, posts));
             }
 
-            return ResponseEntity.ok(searchResults);
+            log.info("성공적으로 조회된 게시글:{}", posts.stream().map(PostResponse::getId).toList());
+
+            return ResponseEntity.ok(new SearchResponse(true, posts));
         } catch (Exception e) {
+            log.error("검색 중 예외 발생: {}", e.getMessage(), e);
             List<PostResponse> randomPosts = searchService.getRandomPosts(token);
 
             return ResponseEntity.ok(new SearchResponse(false, randomPosts));
