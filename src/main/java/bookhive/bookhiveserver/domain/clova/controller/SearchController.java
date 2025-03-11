@@ -28,10 +28,8 @@ public class SearchController {
                                            @RequestBody SearchRequest request) {
 
         try {
-            log.info( "키워드 검색 시작");
             SearchTypeResponse searchType = searchService.checkSearchType(request);
             List<PostResponse> posts;
-            SearchResponse searchResults;
 
             if (Boolean.parseBoolean(searchType.getIsSearch())) {
                 log.info("키워드 검색 시작");
@@ -44,6 +42,7 @@ public class SearchController {
             if (posts.isEmpty()) {
                 log.info("맞는 결과 없음");
                 posts = searchService.getRandomPosts(token);
+                log.info("랜덤으로 조회된 게시글:{}", posts.stream().map(PostResponse::getId).toList());
 
                 return ResponseEntity.ok(new SearchResponse(false, posts));
             }
