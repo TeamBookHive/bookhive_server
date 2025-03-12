@@ -1,8 +1,9 @@
 # Bookchive Server
 
-> 빠르게 기록하고 쉽게 분류하는 요즘 독서 아카이빙, 북카이브 ✨
+> 맘에 드는 책 속 문장, 간편하게 아카이브 ✨
 
-![bookchive-preview](https://github.com/user-attachments/assets/418e0171-b92d-4529-b3ff-6f4b32e5faf2)
+![bookchive-preview](https://github.com/user-attachments/assets/c7331d67-ab43-4432-b214-7a46371ddd86)
+
 
 <br>
 
