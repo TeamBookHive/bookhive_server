@@ -21,7 +21,7 @@ public class ContentController {
 
     @PostMapping("/fix-sentence")
     public ResponseEntity<CorrectErrorsResponse> correct(@RequestBody ClovaContentRequest request) {
-        String content = contentService.callClovaApiToFix(request);
+        String content = contentService.callToFix(request);
 
         return ResponseEntity.ok(new CorrectErrorsResponse(content));
     }
@@ -29,7 +29,7 @@ public class ContentController {
     @PostMapping("/recommended-tags")
     public ResponseEntity<List<RecommendTagResponse>> recommend(@RequestHeader("Authorization") String token,
                                                        @RequestBody ClovaContentRequest request) {
-        String tagValues = contentService.callClovaApiToRecommend(request, token);
+        String tagValues = contentService.callToRecommend(request, token);
         List<RecommendTagResponse> tags = contentService.createRecommendTagList(tagValues, token);
 
         return ResponseEntity.ok(tags);
