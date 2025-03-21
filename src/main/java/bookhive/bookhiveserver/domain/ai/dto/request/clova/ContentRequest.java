@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClovaSearchRequest {
-    private String question;
+public class ContentRequest {
+    private String content;
 }
