@@ -1,9 +1,9 @@
-package bookhive.bookhiveserver.domain.clova.service;
+package bookhive.bookhiveserver.domain.ai.service;
 
-import bookhive.bookhiveserver.domain.clova.client.ClovaSearchApiClient;
-import bookhive.bookhiveserver.domain.clova.dto.request.SearchRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.KeywordsResponse;
-import bookhive.bookhiveserver.domain.clova.dto.response.SearchTypeResponse;
+import bookhive.bookhiveserver.domain.ai.client.clova.ClovaSearchApiClient;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ClovaSearchRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.KeywordsResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.clova.ClovaSearchTypeResponse;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;
@@ -31,7 +31,7 @@ public class SearchService {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
 
-    public SearchTypeResponse checkSearchType(SearchRequest request) {
+    public ClovaSearchTypeResponse checkSearchType(ClovaSearchRequest request) {
 
         return searchApiClient.checkSearchType(request.getQuestion());
     }
@@ -47,7 +47,7 @@ public class SearchService {
                 .toList();
     }
 
-    public List<PostResponse> searchByAI(SearchRequest request, String token) {
+    public List<PostResponse> searchByAI(ClovaSearchRequest request, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 

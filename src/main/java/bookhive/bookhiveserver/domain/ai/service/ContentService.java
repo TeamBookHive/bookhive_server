@@ -1,8 +1,8 @@
-package bookhive.bookhiveserver.domain.clova.service;
+package bookhive.bookhiveserver.domain.ai.service;
 
-import bookhive.bookhiveserver.domain.clova.client.ClovaContentApiClient;
-import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
+import bookhive.bookhiveserver.domain.ai.client.clova.ClovaContentApiClient;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ClovaContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -26,11 +26,11 @@ public class ContentService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    public String callClovaApiToFix(ContentRequest request) {
+    public String callClovaApiToFix(ClovaContentRequest request) {
         return clovaContentApiClient.correctErrors(request.getContent());
     }
 
-    public String callClovaApiToRecommend(ContentRequest request, String token) {
+    public String callClovaApiToRecommend(ClovaContentRequest request, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
         List<String> tagNames = tagRepository.findAllByUser(user).stream()

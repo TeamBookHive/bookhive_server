@@ -1,11 +1,11 @@
-package bookhive.bookhiveserver.domain.clova.dto.response;
+package bookhive.bookhiveserver.domain.ai.dto.response.clova;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchTypeResponse {
+public class ClovaSearchTypeResponse {
     private String isSearch;
     private String keyword;
 }
