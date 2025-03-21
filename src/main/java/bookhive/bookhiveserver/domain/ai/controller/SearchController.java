@@ -1,8 +1,8 @@
 package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.ai.dto.response.clova.ClovaSearchResponse;
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.ClovaSearchRequest;
-import bookhive.bookhiveserver.domain.ai.dto.response.clova.ClovaSearchTypeResponse;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.SearchRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.clova.SearchResponse;
 import bookhive.bookhiveserver.domain.ai.service.SearchService;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import java.util.List;
@@ -24,11 +24,11 @@ public class SearchController {
     private final SearchService searchService;
 
     @PostMapping("/ai-search-posts")
-    public ResponseEntity<ClovaSearchResponse> search(@RequestHeader(value = "Authorization") String token,
-                                                      @RequestBody ClovaSearchRequest request) {
+    public ResponseEntity<SearchResponse> search(@RequestHeader(value = "Authorization") String token,
+                                                 @RequestBody SearchRequest request) {
 
         try {
-            ClovaSearchTypeResponse searchType = searchService.checkSearchType(request);
+            AiSearchTypeResponse searchType = searchService.checkSearchType(request);
             List<PostResponse> posts;
 
             if (Boolean.parseBoolean(searchType.getIsSearch())) {
@@ -44,17 +44,17 @@ public class SearchController {
                 posts = searchService.getRandomPosts(token);
                 log.info("랜덤으로 조회된 게시글:{}", posts.stream().map(PostResponse::getId).toList());
 
-                return ResponseEntity.ok(new ClovaSearchResponse(false, posts));
+                return ResponseEntity.ok(new SearchResponse(false, posts));
             }
 
             log.info("성공적으로 조회된 게시글:{}", posts.stream().map(PostResponse::getId).toList());
 
-            return ResponseEntity.ok(new ClovaSearchResponse(true, posts));
+            return ResponseEntity.ok(new SearchResponse(true, posts));
         } catch (Exception e) {
             log.error("검색 중 예외 발생: {}", e.getMessage(), e);
             List<PostResponse> randomPosts = searchService.getRandomPosts(token);
 
-            return ResponseEntity.ok(new ClovaSearchResponse(false, randomPosts));
+            return ResponseEntity.ok(new SearchResponse(false, randomPosts));
         }
     }
 }

@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.ClovaContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.CorrectErrorsResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.ai.service.ContentService;
@@ -20,7 +20,7 @@ public class ContentController {
     private final ContentService contentService;
 
     @PostMapping("/fix-sentence")
-    public ResponseEntity<CorrectErrorsResponse> correct(@RequestBody ClovaContentRequest request) {
+    public ResponseEntity<CorrectErrorsResponse> correct(@RequestBody ContentRequest request) {
         String content = contentService.callToFix(request);
 
         return ResponseEntity.ok(new CorrectErrorsResponse(content));
@@ -28,7 +28,7 @@ public class ContentController {
 
     @PostMapping("/recommended-tags")
     public ResponseEntity<List<RecommendTagResponse>> recommend(@RequestHeader("Authorization") String token,
-                                                       @RequestBody ClovaContentRequest request) {
+                                                       @RequestBody ContentRequest request) {
         String tagValues = contentService.callToRecommend(request, token);
         List<RecommendTagResponse> tags = contentService.createRecommendTagList(tagValues, token);
 
