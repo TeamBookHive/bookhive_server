@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.clova.dto.request;
+package bookhive.bookhiveserver.domain.ai.dto.request.clova;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,8 +1,8 @@
-package bookhive.bookhiveserver.domain.clova.service;
+package bookhive.bookhiveserver.domain.ai.service;
 
-import bookhive.bookhiveserver.domain.clova.client.ClovaContentApiClient;
-import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
+import bookhive.bookhiveserver.domain.ai.client.AiContentClient;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -22,15 +22,15 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
-    private final ClovaContentApiClient clovaContentApiClient;
+    private final AiContentClient aiContentClient;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    public String callClovaApiToFix(ContentRequest request) {
-        return clovaContentApiClient.correctErrors(request.getContent());
+    public String callToFix(ContentRequest request) {
+        return aiContentClient.correct(request.getContent()).getCorrectedContent();
     }
 
-    public String callClovaApiToRecommend(ContentRequest request, String token) {
+    public String callToRecommend(ContentRequest request, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
         List<String> tagNames = tagRepository.findAllByUser(user).stream()
@@ -39,7 +39,7 @@ public class ContentService {
 
         String originTags = String.join(", ", tagNames);
 
-        return clovaContentApiClient.recommendTags(request.getContent(), originTags);
+        return String.join(", ", aiContentClient.recommendTags(request.getContent(), originTags).getTags());
     }
 
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {

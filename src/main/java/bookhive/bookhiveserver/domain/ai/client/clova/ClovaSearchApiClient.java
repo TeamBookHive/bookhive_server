@@ -1,10 +1,10 @@
-package bookhive.bookhiveserver.domain.clova.client;
+package bookhive.bookhiveserver.domain.ai.client.clova;
 
-import bookhive.bookhiveserver.domain.clova.dto.request.ClovaMessage;
-import bookhive.bookhiveserver.domain.clova.dto.request.ClovaRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.ClovaResponse;
-import bookhive.bookhiveserver.domain.clova.dto.response.KeywordsResponse;
-import bookhive.bookhiveserver.domain.clova.dto.response.SearchTypeResponse;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ClovaMessage;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ClovaRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.clova.ClovaKeywordsResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.clova.ClovaResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.clova.ClovaSearchTypeResponse;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +30,7 @@ public class ClovaSearchApiClient {
     @Value("${clova.api-key}")
     private String clovaApiKey;
 
-    public SearchTypeResponse checkSearchType(String question) {
+    public ClovaSearchTypeResponse checkSearchType(String question) {
 
         List<ClovaMessage> messages = List.of(
                 new ClovaMessage("system",
@@ -88,13 +88,13 @@ public class ClovaSearchApiClient {
 //        System.out.println("키워드 검색 결과: \n" + jsonString);
 
         try {
-            return objectMapper.readValue(jsonString, SearchTypeResponse.class);
+            return objectMapper.readValue(jsonString, ClovaSearchTypeResponse.class);
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.JSON_PARSE_ERROR.toString(), e);
         }
 }
 
-    public KeywordsResponse extractKeywords(String question, String originTags) {
+    public ClovaKeywordsResponse extractKeywords(String question, String originTags) {
 
         List<ClovaMessage> messages = List.of(
                 new ClovaMessage("system",
@@ -155,7 +155,7 @@ public class ClovaSearchApiClient {
 //        System.out.println("AI 검색 결과: \n" + jsonString);
 
         try {
-            return objectMapper.readValue(jsonString, KeywordsResponse.class);
+            return objectMapper.readValue(jsonString, ClovaKeywordsResponse.class);
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.JSON_PARSE_ERROR.toString(), e);
         }

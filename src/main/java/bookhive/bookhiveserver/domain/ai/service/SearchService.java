@@ -1,9 +1,9 @@
-package bookhive.bookhiveserver.domain.clova.service;
+package bookhive.bookhiveserver.domain.ai.service;
 
-import bookhive.bookhiveserver.domain.clova.client.ClovaSearchApiClient;
-import bookhive.bookhiveserver.domain.clova.dto.request.SearchRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.KeywordsResponse;
-import bookhive.bookhiveserver.domain.clova.dto.response.SearchTypeResponse;
+import bookhive.bookhiveserver.domain.ai.client.OpenAiSearchClient;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.SearchRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.AiKeywordsResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;
@@ -18,22 +18,24 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SearchService {
 
-    private final ClovaSearchApiClient searchApiClient;
+    private final OpenAiSearchClient AiSearchClient;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
 
-    public SearchTypeResponse checkSearchType(SearchRequest request) {
+    public AiSearchTypeResponse checkSearchType(SearchRequest request) {
 
-        return searchApiClient.checkSearchType(request.getQuestion());
+        return AiSearchClient.checkSearchType(request.getQuestion());
     }
 
     public List<PostResponse> searchByKeyword(String keyword, String token) {
@@ -56,7 +58,9 @@ public class SearchService {
                 .collect(Collectors.toList());
         String originTags = String.join(", ", tagNames);
 
-        KeywordsResponse keywords = searchApiClient.extractKeywords(request.getQuestion(), originTags);
+        AiKeywordsResponse keywords = AiSearchClient.extractKeywords(request.getQuestion(), originTags);
+
+        log.info("hey!!!!!" + keywords.getKeywords());
 
         List<Post> posts = postRepository.findByUser(user);
 

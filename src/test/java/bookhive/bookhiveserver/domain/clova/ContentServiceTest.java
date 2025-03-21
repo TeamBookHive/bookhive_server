@@ -3,8 +3,8 @@ package bookhive.bookhiveserver.domain.clova;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
-import bookhive.bookhiveserver.domain.clova.service.ContentService;
+import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
+import bookhive.bookhiveserver.domain.ai.service.ContentService;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import java.util.List;

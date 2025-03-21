@@ -1,9 +1,9 @@
-package bookhive.bookhiveserver.domain.clova.controller;
+package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.clova.dto.request.SearchRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.SearchResponse;
-import bookhive.bookhiveserver.domain.clova.dto.response.SearchTypeResponse;
-import bookhive.bookhiveserver.domain.clova.service.SearchService;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.SearchRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.clova.SearchResponse;
+import bookhive.bookhiveserver.domain.ai.service.SearchService;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +25,10 @@ public class SearchController {
 
     @PostMapping("/ai-search-posts")
     public ResponseEntity<SearchResponse> search(@RequestHeader(value = "Authorization") String token,
-                                           @RequestBody SearchRequest request) {
+                                                 @RequestBody SearchRequest request) {
 
         try {
-            SearchTypeResponse searchType = searchService.checkSearchType(request);
+            AiSearchTypeResponse searchType = searchService.checkSearchType(request);
             List<PostResponse> posts;
 
             if (Boolean.parseBoolean(searchType.getIsSearch())) {

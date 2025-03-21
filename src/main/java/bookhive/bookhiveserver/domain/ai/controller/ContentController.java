@@ -1,9 +1,9 @@
-package bookhive.bookhiveserver.domain.clova.controller;
+package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.clova.dto.request.ContentRequest;
-import bookhive.bookhiveserver.domain.clova.dto.response.FixedSentenceResponse;
-import bookhive.bookhiveserver.domain.clova.dto.response.RecommendTagResponse;
-import bookhive.bookhiveserver.domain.clova.service.ContentService;
+import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.response.CorrectErrorsResponse;
+import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
+import bookhive.bookhiveserver.domain.ai.service.ContentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +20,16 @@ public class ContentController {
     private final ContentService contentService;
 
     @PostMapping("/fix-sentence")
-    public ResponseEntity<FixedSentenceResponse> correct(@RequestBody ContentRequest request) {
-        String content = contentService.callClovaApiToFix(request);
+    public ResponseEntity<CorrectErrorsResponse> correct(@RequestBody ContentRequest request) {
+        String content = contentService.callToFix(request);
 
-        return ResponseEntity.ok(new FixedSentenceResponse(content));
+        return ResponseEntity.ok(new CorrectErrorsResponse(content));
     }
 
     @PostMapping("/recommended-tags")
     public ResponseEntity<List<RecommendTagResponse>> recommend(@RequestHeader("Authorization") String token,
                                                        @RequestBody ContentRequest request) {
-        String tagValues = contentService.callClovaApiToRecommend(request, token);
+        String tagValues = contentService.callToRecommend(request, token);
         List<RecommendTagResponse> tags = contentService.createRecommendTagList(tagValues, token);
 
         return ResponseEntity.ok(tags);
