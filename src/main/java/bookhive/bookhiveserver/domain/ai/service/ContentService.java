@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.service;
 
-import bookhive.bookhiveserver.domain.ai.client.AiContentClient;
+import bookhive.bookhiveserver.domain.ai.client.AiClient;
 import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
@@ -22,12 +22,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
-    private final AiContentClient aiContentClient;
+    private final AiClient aiClient;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
     public String callToFix(ContentRequest request) {
-        return aiContentClient.correct(request.getContent()).getCorrectedContent();
+        return aiClient.correct(request.getContent()).getCorrectedContent();
     }
 
     public String callToRecommend(ContentRequest request, String token) {
@@ -39,7 +39,7 @@ public class ContentService {
 
         String originTags = String.join(", ", tagNames);
 
-        return String.join(", ", aiContentClient.recommendTags(request.getContent(), originTags).getTags());
+        return String.join(", ", aiClient.recommendTags(request.getContent(), originTags).getTags());
     }
 
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {

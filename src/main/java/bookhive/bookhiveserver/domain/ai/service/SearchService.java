@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.service;
 
-import bookhive.bookhiveserver.domain.ai.client.OpenAiSearchClient;
+import bookhive.bookhiveserver.domain.ai.client.OpenAiClient;
 import bookhive.bookhiveserver.domain.ai.dto.request.clova.SearchRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiKeywordsResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
@@ -28,14 +28,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class SearchService {
 
-    private final OpenAiSearchClient AiSearchClient;
+    private final OpenAiClient aiClient;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
 
     public AiSearchTypeResponse checkSearchType(SearchRequest request) {
 
-        return AiSearchClient.checkSearchType(request.getQuestion());
+        return aiClient.checkSearchType(request.getQuestion());
     }
 
     public List<PostResponse> searchByKeyword(String keyword, String token) {
@@ -58,9 +58,9 @@ public class SearchService {
                 .collect(Collectors.toList());
         String originTags = String.join(", ", tagNames);
 
-        AiKeywordsResponse keywords = AiSearchClient.extractKeywords(request.getQuestion(), originTags);
+        AiKeywordsResponse keywords = aiClient.extractKeywords(request.getQuestion(), originTags);
 
-        log.info("hey!!!!!" + keywords.getKeywords());
+        log.info("추출한 키워드:" + keywords.getKeywords());
 
         List<Post> posts = postRepository.findByUser(user);
 
