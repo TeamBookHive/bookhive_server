@@ -171,7 +171,8 @@ public class OpenAiClient implements AiClient {
     }
 
     private <T> T callWithStructuredOutput(String user, String system, Class<T> clazz) {
-        var outputConverter = new BeanOutputConverter<T>(clazz);
+
+        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(clazz);
         String jsonSchema = outputConverter.getJsonSchema();
 
         Prompt prompt = new Prompt(user,
