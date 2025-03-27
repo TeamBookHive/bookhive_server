@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.CorrectErrorsResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.ai.service.ContentService;

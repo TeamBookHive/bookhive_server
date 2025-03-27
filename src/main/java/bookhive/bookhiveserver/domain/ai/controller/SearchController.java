@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.SearchRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.SearchRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.clova.SearchResponse;
 import bookhive.bookhiveserver.domain.ai.service.SearchService;

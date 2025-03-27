@@ -1,7 +1,7 @@
 package bookhive.bookhiveserver.domain.ai.service;
 
 import bookhive.bookhiveserver.domain.ai.client.AiClient;
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
