@@ -20,8 +20,9 @@ public class ContentController {
     private final ContentService contentService;
 
     @PostMapping("/fix-sentence")
-    public ResponseEntity<CorrectErrorsResponse> correct(@RequestBody ContentRequest request) {
-        String content = contentService.callToFix(request);
+    public ResponseEntity<CorrectErrorsResponse> correct(@RequestHeader("Authorization") String token,
+                                                         @RequestBody ContentRequest request) {
+        String content = contentService.callToFix(request, token);
 
         return ResponseEntity.ok(new CorrectErrorsResponse(content));
     }
