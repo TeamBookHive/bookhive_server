@@ -1,12 +1,13 @@
 package bookhive.bookhiveserver.domain.ai.service;
 
 import bookhive.bookhiveserver.domain.ai.client.AiClient;
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.event.content.ContentFixedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,8 +28,16 @@ public class ContentService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    public String callToFix(ContentRequest request) {
-        return aiClient.correct(request.getContent()).getCorrectedContent();
+    private final ApplicationEventPublisher eventPublisher;
+
+    public String callToFix(ContentRequest request, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+
+        String fixedContent = aiClient.correct(request.getContent()).getCorrectedContent();
+        eventPublisher.publishEvent(ContentFixedEvent.create(user.getId(), request.getProcessId(), fixedContent));
+
+        return fixedContent;
     }
 
     public String callToRecommend(ContentRequest request, String token) {

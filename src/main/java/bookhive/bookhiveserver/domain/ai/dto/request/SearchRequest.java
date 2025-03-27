@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.ai.dto.request.clova;
+package bookhive.bookhiveserver.domain.ai.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentRequest {
-    private String content;
+public class SearchRequest {
+    private String question;
 }

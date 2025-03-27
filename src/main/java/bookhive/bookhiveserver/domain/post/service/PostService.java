@@ -10,6 +10,8 @@ import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.event.content.ContentSavedEvent;
+import bookhive.bookhiveserver.global.event.post.PostCreatedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,7 +34,10 @@ public class PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public List<PostResponse> getPosts(String token) {
+
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
@@ -41,7 +47,8 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(String content, List<TagRequest> tags, String token) {
+    public Post createPost(String content, List<TagRequest> tags, String processId, String token) {
+
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
@@ -73,11 +80,15 @@ public class PostService {
                 .map(tag -> new PostTag(post, tag))
                 .toList();
 
+        eventPublisher.publishEvent(PostCreatedEvent.create(user.getId()));
+        eventPublisher.publishEvent(ContentSavedEvent.create(user.getId(), processId, content));
+
         return postRepository.save(post);
     }
 
     @Transactional
     public Post updatePost(String postId, String newContent, List<TagRequest> newTags, String token) {
+
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
@@ -111,6 +122,7 @@ public class PostService {
 
     @Transactional
     public void deletePost(String postId, String token) {
+
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 

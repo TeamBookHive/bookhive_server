@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.controller;
 
-import bookhive.bookhiveserver.domain.ai.dto.request.clova.SearchRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.SearchRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.clova.SearchResponse;
 import bookhive.bookhiveserver.domain.ai.service.SearchService;
@@ -28,30 +28,24 @@ public class SearchController {
                                                  @RequestBody SearchRequest request) {
 
         try {
-            AiSearchTypeResponse searchType = searchService.checkSearchType(request);
+            AiSearchTypeResponse searchType = searchService.checkSearchType(request, token);
             List<PostResponse> posts;
 
             if (Boolean.parseBoolean(searchType.getIsSearch())) {
-                log.info("키워드 검색 시작");
                 posts = searchService.searchByKeyword(searchType.getKeyword(), token);
             } else {
-                log.info("AI 검색 시작");
                 posts = searchService.searchByAI(request, token);
             }
 
             if (posts.isEmpty()) {
-                log.info("맞는 결과 없음");
                 posts = searchService.getRandomPosts(token);
-                log.info("랜덤으로 조회된 게시글:{}", posts.stream().map(PostResponse::getId).toList());
 
                 return ResponseEntity.ok(new SearchResponse(false, posts));
             }
 
-            log.info("성공적으로 조회된 게시글:{}", posts.stream().map(PostResponse::getId).toList());
-
             return ResponseEntity.ok(new SearchResponse(true, posts));
         } catch (Exception e) {
-            log.error("검색 중 예외 발생: {}", e.getMessage(), e);
+
             List<PostResponse> randomPosts = searchService.getRandomPosts(token);
 
             return ResponseEntity.ok(new SearchResponse(false, randomPosts));
