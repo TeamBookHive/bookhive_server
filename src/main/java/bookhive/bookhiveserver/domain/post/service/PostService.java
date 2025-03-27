@@ -10,6 +10,7 @@ import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.event.content.ContentSavedEvent;
 import bookhive.bookhiveserver.global.event.post.PostCreatedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
@@ -46,7 +47,7 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(String content, List<TagRequest> tags, String token) {
+    public Post createPost(String content, List<TagRequest> tags, String processId, String token) {
 
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
@@ -80,6 +81,7 @@ public class PostService {
                 .toList();
 
         eventPublisher.publishEvent(PostCreatedEvent.create(user.getId()));
+        eventPublisher.publishEvent(ContentSavedEvent.create(user.getId(), processId, content));
 
         return postRepository.save(post);
     }
