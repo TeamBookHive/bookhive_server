@@ -11,6 +11,7 @@ import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.event.search.PostSearchedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,7 +35,13 @@ public class SearchService {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
 
-    public AiSearchTypeResponse checkSearchType(SearchRequest request) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public AiSearchTypeResponse checkSearchType(SearchRequest request, String token) {
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+
+        eventPublisher.publishEvent(PostSearchedEvent.create(user.getId(), request.getQuestion()));
 
         return aiClient.checkSearchType(request.getQuestion());
     }
