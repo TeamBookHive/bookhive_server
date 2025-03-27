@@ -27,3 +27,5 @@ posthog:
   base-url: ${POSTHOG_BASE_URL}
   api-key: ${POSTHOG_API_KEY}
 
+slack:
+  url: ${SLACK_URL}
