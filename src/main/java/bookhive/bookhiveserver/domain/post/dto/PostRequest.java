@@ -13,5 +13,5 @@ public class PostRequest {
     private String content;
     private List<TagRequest> tags = new ArrayList<>();
     private BookDetail book;
-    private String processId= "";
+    private String processId = "";
 }

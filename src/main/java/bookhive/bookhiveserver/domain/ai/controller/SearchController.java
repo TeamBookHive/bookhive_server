@@ -5,6 +5,7 @@ import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.clova.SearchResponse;
 import bookhive.bookhiveserver.domain.ai.service.SearchService;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @PostMapping("/ai-search-posts")
+    @Operation(summary = "AI 아카이브 검색", description = "입력된 질문을 분석해 어울리는 아카이브를 검색합니다.")
     public ResponseEntity<SearchResponse> search(@RequestHeader(value = "Authorization") String token,
                                                  @RequestBody SearchRequest request) {
 
