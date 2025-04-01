@@ -27,7 +27,8 @@ public class BookService {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
-        Book book = bookRepository.save(Book.create(request.getTitle(), request.getAuthor(), user));
+        Book book = bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor())
+                .orElseGet(() -> bookRepository.save(Book.create(request.getTitle(), request.getAuthor(), user)));
 
         return BookDtoMapper.toBookCreateResponse(book.getTitle(), book.getAuthor(), book.getCreatedAt());
     }
