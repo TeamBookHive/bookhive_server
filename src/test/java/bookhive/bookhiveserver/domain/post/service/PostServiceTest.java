@@ -6,6 +6,7 @@ import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.testUtil.PostDtoMother;
 import bookhive.bookhiveserver.testUtil.TagDtoMother;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -44,7 +45,7 @@ class PostServiceTest {
         List<TagRequest> tags = List.of(newTagRequest1, newTagRequest2);
 
         // when
-        Post result = postService.createPost(content, tags, processId, testUser.getToken());
+        Post result = postService.createPost(PostDtoMother.createPostRequest(content, tags, processId), testUser.getToken());
 
         // then
         assertThat(result.getId()).isNotNull();

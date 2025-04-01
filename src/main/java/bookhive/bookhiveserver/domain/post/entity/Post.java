@@ -58,10 +58,11 @@ public class Post {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public static Post create(String content, List<PostTag> postTags, User user) {
+    public static Post create(String content, List<PostTag> postTags, Book book, User user) {
         return Post.builder()
                 .content(content)
                 .postTags(postTags)
+                .book(book)
                 .user(user)
                 .build();
     }

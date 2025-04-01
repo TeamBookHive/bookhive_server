@@ -1,5 +1,8 @@
 package bookhive.bookhiveserver.domain.post.service;
 
+import bookhive.bookhiveserver.domain.book.entity.Book;
+import bookhive.bookhiveserver.domain.book.repository.BookRepository;
+import bookhive.bookhiveserver.domain.post.dto.PostRequest;
 import bookhive.bookhiveserver.domain.post.dto.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.entity.PostTag;
@@ -33,6 +36,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final BookRepository bookRepository;
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -47,10 +51,12 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(String content, List<TagRequest> tags, String processId, String token) {
+    public Post createPost(PostRequest request, String token) {
 
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+
+        String content = request.getContent();
 
         if (content.length() > 1000)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString());
@@ -58,7 +64,7 @@ public class PostService {
         List<Tag> fetchedTags = new ArrayList<>();
         Set<Long> currentTagIds = new HashSet<>();
 
-        for (TagRequest tag : tags) {
+        for (TagRequest tag : request.getTags()) {
             Long tagId = tag.getId();
             if (tagId == null) { // 태그가 존재하지 않는다면 생성하는 로직 추가
                 Tag newTag = tagRepository.save(Tag.create(tag.getValue(), user));
@@ -74,14 +80,19 @@ public class PostService {
             }
         }
 
-        Post post = Post.create(content, new ArrayList<>(), user);
+        Book book = request.getBook() == null
+                ? null
+                : bookRepository.findById(request.getBook().getId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString() + request.getBook().getId()));
+
+        Post post = Post.create(content, new ArrayList<>(), book, user);
 
         List<PostTag> postTags = fetchedTags.stream()
                 .map(tag -> PostTag.create(post, tag))
                 .toList();
 
         eventPublisher.publishEvent(PostCreatedEvent.create(user.getId()));
-        eventPublisher.publishEvent(ContentSavedEvent.create(user.getId(), processId, content));
+        eventPublisher.publishEvent(ContentSavedEvent.create(user.getId(), request.getProcessId(), content));
 
         return postRepository.save(post);
     }
