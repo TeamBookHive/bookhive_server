@@ -31,7 +31,7 @@ public class BookService {
         Book book = bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor())
                 .orElseGet(() -> bookRepository.save(Book.create(request.getTitle(), request.getAuthor(), user)));
 
-        return BookDtoMapper.toBookCreateResponse(book.getTitle(), book.getAuthor(), book.getCreatedAt());
+        return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getCreatedAt());
     }
 
     public BookShowLatestResponse findLatestByUser(String token) {

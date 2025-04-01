@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 public class BookCreateResponse {
 
+    private Long id;
     private String title;
     private String author;
     private LocalDateTime createdAt;

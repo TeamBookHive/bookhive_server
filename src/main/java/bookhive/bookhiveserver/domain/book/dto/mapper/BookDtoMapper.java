@@ -6,8 +6,9 @@ import java.time.LocalDateTime;
 
 public class BookDtoMapper {
 
-    public static BookCreateResponse toBookCreateResponse(String title, String author, LocalDateTime createdAt) {
+    public static BookCreateResponse toBookCreateResponse(Long id, String title, String author, LocalDateTime createdAt) {
         return BookCreateResponse.builder()
+                .id(id)
                 .title(title)
                 .author(author)
                 .createdAt(createdAt)
