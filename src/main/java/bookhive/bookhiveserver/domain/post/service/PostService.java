@@ -74,7 +74,7 @@ public class PostService {
             }
         }
 
-        Post post = new Post(content, new ArrayList<>(), user);
+        Post post = Post.create(content, new ArrayList<>(), user);
 
         List<PostTag> postTags = fetchedTags.stream()
                 .map(tag -> new PostTag(post, tag))
