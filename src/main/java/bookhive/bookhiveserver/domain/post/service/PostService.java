@@ -77,7 +77,7 @@ public class PostService {
         Post post = Post.create(content, new ArrayList<>(), user);
 
         List<PostTag> postTags = fetchedTags.stream()
-                .map(tag -> new PostTag(post, tag))
+                .map(tag -> PostTag.create(post, tag))
                 .toList();
 
         eventPublisher.publishEvent(PostCreatedEvent.create(user.getId()));
