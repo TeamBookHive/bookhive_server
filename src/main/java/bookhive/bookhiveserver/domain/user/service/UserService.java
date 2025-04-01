@@ -18,7 +18,7 @@ public class UserService {
                 .map(User::getToken)
                 .orElseGet(() -> {
                     String newToken = generateToken();
-                    User newUser = new User(deviceId, newToken);
+                    User newUser = User.create(deviceId, newToken);
                     userRepository.save(newUser);
                     return newToken;
                 });

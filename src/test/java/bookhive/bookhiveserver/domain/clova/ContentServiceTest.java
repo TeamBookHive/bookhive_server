@@ -29,7 +29,7 @@ public class ContentServiceTest {
 
     @BeforeEach
     void login() {
-        testUser = new User("testDeiceId", "testToken");
+        testUser = User.create("testDeiceId", "testToken");
 
         when(userRepository.findByToken("testToken")).thenReturn(Optional.of(testUser));
     }
