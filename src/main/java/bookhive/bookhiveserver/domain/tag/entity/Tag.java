@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,7 +27,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 public class Tag {
     @Id
@@ -48,9 +52,11 @@ public class Tag {
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostTag> postTags = new ArrayList<>();
 
-    public Tag(String value, User user) {
-        this.value = value;
-        this.user = user;
+    public static Tag create(String value, User user) {
+        return Tag.builder()
+                .value(value)
+                .user(user)
+                .build();
     }
 
     public void update(String newValue) {
