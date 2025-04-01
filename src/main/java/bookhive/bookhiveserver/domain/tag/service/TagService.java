@@ -38,7 +38,7 @@ public class TagService {
     public Tag createTag(String value, String token) {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
-        Tag tag = new Tag(value, user);
+        Tag tag = Tag.create(value, user);
 
         // 태그 중복 로직 검증 (단, 해당 API는 현재 미사용이므로 보류)
 
@@ -83,7 +83,7 @@ public class TagService {
                 }
             } else {
                 if (!tagValues.contains(newValue) && newTagsInRequest.add(newValue)) {
-                    Tag newTag = tagRepository.save(new Tag(newValue, user));
+                    Tag newTag = tagRepository.save(Tag.create(newValue, user));
                     tagValues.add(newValue);
                     addedTags.add(newTag);
                 }

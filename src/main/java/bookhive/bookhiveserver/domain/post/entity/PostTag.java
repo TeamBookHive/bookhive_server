@@ -6,10 +6,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @IdClass(PostTagId.class)
 public class PostTag {
 
@@ -23,12 +30,13 @@ public class PostTag {
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
-    public PostTag() {}
-
-    public PostTag(Post post, Tag tag) {
-        this.post = post;
-        this.tag = tag;
-        post.getPostTags().add(this);  // 양방향 관계 설정
-        tag.getPostTags().add(this);
+    public static PostTag create(Post post, Tag tag) {
+        PostTag postTag = PostTag.builder()
+                        .post(post)
+                        .tag(tag)
+                        .build();
+        post.getPostTags().add(postTag);
+        tag.getPostTags().add(postTag);
+        return postTag;
     }
 }

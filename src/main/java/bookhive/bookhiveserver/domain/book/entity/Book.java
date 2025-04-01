@@ -1,8 +1,7 @@
-package bookhive.bookhiveserver.domain.post.entity;
+package bookhive.bookhiveserver.domain.book.entity;
 
-import bookhive.bookhiveserver.domain.book.entity.Book;
+import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -13,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +29,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
+public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "book_id")
     private Long id;
 
-    @Column(name = "content", nullable = false, length = 1000)
-    @Size(min = 1, max = 1000)
-    private String content;
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "author", nullable = false)
+    private String author;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -51,23 +51,14 @@ public class Post {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostTag> postTags = new ArrayList<>();
+    @OneToMany(mappedBy = "book")
+    private List<Post> posts = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
-
-    public static Post create(String content, List<PostTag> postTags, Book book, User user) {
-        return Post.builder()
-                .content(content)
-                .postTags(postTags)
-                .book(book)
+    public static Book create(String title, String author, User user) {
+        return Book.builder()
+                .title(title)
+                .author(author)
                 .user(user)
                 .build();
-    }
-
-    public void update(String newContent) {
-        this.content = newContent;
     }
 }
