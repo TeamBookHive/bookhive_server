@@ -11,9 +11,10 @@ public class BookShowLatestResponse {
     private Long id;
     private String title;
     private String author;
+    private String imageUrl;
     private LocalDateTime createdAt;
 
     public static BookShowLatestResponse empty() {
-        return new BookShowLatestResponse(null, null, null, null);
+        return new BookShowLatestResponse(null, null, null, null, null);
     }
 }

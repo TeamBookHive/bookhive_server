@@ -29,9 +29,10 @@ public class BookService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
         Book book = bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor())
-                .orElseGet(() -> bookRepository.save(Book.create(request.getTitle(), request.getAuthor(), user)));
+                .orElseGet(() -> bookRepository.save(
+                        Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), user)));
 
-        return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getCreatedAt());
+        return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
     }
 
     public BookShowLatestResponse findLatestByUser(String token) {
@@ -43,6 +44,6 @@ public class BookService {
 
         if (book == null) return BookShowLatestResponse.empty();
 
-        return BookDtoMapper.toBookShowLatestResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getCreatedAt());
+        return BookDtoMapper.toBookShowLatestResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
     }
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,9 @@ public class Book {
     @Column(name = "author", nullable = false)
     private String author;
 
+    @Column(name = "image_url", length = 2048)
+    private String imageUrl;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -54,10 +58,11 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 
-    public static Book create(String title, String author, User user) {
+    public static Book create(String title, String author, String imageUrl, User user) {
         return Book.builder()
                 .title(title)
                 .author(author)
+                .imageUrl(imageUrl)
                 .user(user)
                 .build();
     }
