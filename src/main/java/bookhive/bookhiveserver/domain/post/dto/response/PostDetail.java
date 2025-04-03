@@ -7,17 +7,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
-@Getter
-public class PostResponse {
+public class PostDetail {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
     private List<String> tags;
     private BookDetail book;
 
-    public PostResponse(Post post) {
+    public PostDetail(Post post) {
         this.id = post.getId();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
