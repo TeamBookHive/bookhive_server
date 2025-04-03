@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostRequest {
+
     private String content;
     private List<TagRequest> tags = new ArrayList<>();
     private BookDetail book;

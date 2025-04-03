@@ -80,10 +80,13 @@ public class PostService {
             }
         }
 
-        Book book = request.getBook() == null
-                ? null
-                : bookRepository.findById(request.getBook().getId())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString() + request.getBook().getId()));
+        Book book = null;
+        if (request.getBook() != null) {
+            book = bookRepository.findByIsbn(request.getBook().getIsbn())
+                    .orElseGet(() -> bookRepository.save(
+                            Book.create(request.getBook().getTitle(), request.getBook().getAuthor(), request.getBook().getImageUrl(), request.getBook().getIsbn(), user)));
+
+        }
 
         Post post = Post.create(content, new ArrayList<>(), book, user);
 
