@@ -2,6 +2,7 @@ package bookhive.bookhiveserver.domain.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import bookhive.bookhiveserver.domain.book.dto.request.BookDetail;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -35,7 +36,7 @@ class PostServiceTest {
     }
 
     @Test
-    void 기록_생성에_성공하면_생성된_기록을_반환한다()  {
+    void 기록_생성_정상_태그_존재_책_존재()  {
         // given
         String content = "기록할 내용입니다.";
         String processId = "1";
@@ -44,8 +45,10 @@ class PostServiceTest {
         TagRequest newTagRequest2 = TagDtoMother.createTagRequest(null, "태그2");
         List<TagRequest> tags = List.of(newTagRequest1, newTagRequest2);
 
+        BookDetail bookDetail = PostDtoMother.createBookDetail("책 제목", "책 저자", null, "123-45-6789-123-0");
+
         // when
-        Post result = postService.createPost(PostDtoMother.createPostRequest(content, tags, processId), testUser.getToken());
+        Post result = postService.createPost(PostDtoMother.createPostRequest(content, tags, bookDetail, processId), testUser.getToken());
 
         // then
         assertThat(result.getId()).isNotNull();
@@ -54,5 +57,9 @@ class PostServiceTest {
         assertThat(result.getPostTags())
                 .extracting(pt -> pt.getTag().getValue())
                 .containsExactlyInAnyOrder("태그1", "태그2");
+        assertThat(result.getBook().getId()).isInstanceOf(Long.class);
+        assertThat(result.getBook().getTitle()).isEqualTo("책 제목");
+        assertThat(result.getBook().getAuthor()).isEqualTo("책 저자");
+        assertThat(result.getBook().getIsbn()).isEqualTo("123-45-6789-123-0");
     }
 }
