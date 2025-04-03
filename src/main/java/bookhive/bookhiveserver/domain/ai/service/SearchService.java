@@ -4,7 +4,7 @@ import bookhive.bookhiveserver.domain.ai.client.OpenAiClient;
 import bookhive.bookhiveserver.domain.ai.dto.request.SearchRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiKeywordsResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
-import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;

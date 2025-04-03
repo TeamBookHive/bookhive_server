@@ -1,6 +1,6 @@
 package bookhive.bookhiveserver.domain.ai.dto.response.clova;
 
-import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
 import java.util.List;
 import lombok.Getter;
 

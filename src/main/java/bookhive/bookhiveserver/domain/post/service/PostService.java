@@ -2,8 +2,8 @@ package bookhive.bookhiveserver.domain.post.service;
 
 import bookhive.bookhiveserver.domain.book.entity.Book;
 import bookhive.bookhiveserver.domain.book.repository.BookRepository;
-import bookhive.bookhiveserver.domain.post.dto.PostRequest;
-import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import bookhive.bookhiveserver.domain.post.dto.request.PostRequest;
+import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.entity.PostTag;
 import bookhive.bookhiveserver.domain.post.repository.PostRepository;

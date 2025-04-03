@@ -4,7 +4,7 @@ import bookhive.bookhiveserver.domain.ai.dto.request.SearchRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.AiSearchTypeResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.clova.SearchResponse;
 import bookhive.bookhiveserver.domain.ai.service.SearchService;
-import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

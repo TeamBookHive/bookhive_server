@@ -1,13 +1,13 @@
 package bookhive.bookhiveserver.testUtil;
 
-import bookhive.bookhiveserver.domain.book.dto.request.BookDetail;
-import bookhive.bookhiveserver.domain.post.dto.PostRequest;
+import bookhive.bookhiveserver.domain.book.dto.request.BookInfo;
+import bookhive.bookhiveserver.domain.post.dto.request.PostRequest;
 import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
 import java.util.List;
 
 public class PostDtoMother {
 
-    public static PostRequest createPostRequest(String content, List<TagRequest> tags, BookDetail book, String processId) {
+    public static PostRequest createPostRequest(String content, List<TagRequest> tags, BookInfo book, String processId) {
         PostRequest dto = new PostRequest();
         dto.setContent(content);
         dto.setTags(tags);
@@ -17,8 +17,8 @@ public class PostDtoMother {
         return dto;
     }
 
-    public static BookDetail createBookDetail(String title, String author, String imageUrl, String isbn) {
-        BookDetail dto = new BookDetail();
+    public static BookInfo createBookDetail(String title, String author, String imageUrl, String isbn) {
+        BookInfo dto = new BookInfo();
         dto.setTitle(title);
         dto.setAuthor(author);
         dto.setImageUrl(imageUrl);

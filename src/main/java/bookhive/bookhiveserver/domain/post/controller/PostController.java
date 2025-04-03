@@ -1,7 +1,9 @@
 package bookhive.bookhiveserver.domain.post.controller;
 
-import bookhive.bookhiveserver.domain.post.dto.PostRequest;
-import bookhive.bookhiveserver.domain.post.dto.PostResponse;
+import bookhive.bookhiveserver.domain.post.dto.mapper.PostDtoMapper;
+import bookhive.bookhiveserver.domain.post.dto.request.PostRequest;
+import bookhive.bookhiveserver.domain.post.dto.response.PostCreateResponse;
+import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +36,11 @@ public class PostController {
 
     @PostMapping("")
     @Operation(summary = "아카이브 생성", description = "사용자가 아카이브를 생성합니다.")
-    public ResponseEntity<PostResponse> createPost(@RequestHeader("Authorization") String token,
-                                           @RequestBody PostRequest request) {
+    public ResponseEntity<PostCreateResponse> createPost(@RequestHeader("Authorization") String token,
+                                                                  @RequestBody PostRequest request) {
         Post post = postService.createPost(request, token);
 
-        return ResponseEntity.ok(new PostResponse(post));
+        return ResponseEntity.ok(PostDtoMapper.toPostCreateResponse(post));
     }
 
     @PutMapping("/{postId}")
