@@ -28,9 +28,10 @@ public class BookService {
         User user = userRepository.findByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
 
-        Book book = bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor())
+        // TO DO: Isbn으로 검증 후 중복 에러 반환으로 변경
+        Book book = bookRepository.findByIsbn(request.getIsbn())
                 .orElseGet(() -> bookRepository.save(
-                        Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), user)));
+                        Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
 
         return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
     }
