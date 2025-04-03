@@ -43,6 +43,9 @@ public class Book {
     @Column(name = "author", nullable = false)
     private String author;
 
+    @Column(name = "isbn", length = 20, nullable = false, unique = true)
+    private String isbn;
+
     @Column(name = "image_url", length = 2048)
     private String imageUrl;
 
@@ -58,11 +61,12 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Post> posts = new ArrayList<>();
 
-    public static Book create(String title, String author, String imageUrl, User user) {
+    public static Book create(String title, String author, String imageUrl, String isbn, User user) {
         return Book.builder()
                 .title(title)
                 .author(author)
                 .imageUrl(imageUrl)
+                .isbn(isbn)
                 .user(user)
                 .build();
     }
