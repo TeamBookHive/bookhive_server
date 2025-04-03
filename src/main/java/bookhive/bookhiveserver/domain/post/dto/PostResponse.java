@@ -1,5 +1,6 @@
 package bookhive.bookhiveserver.domain.post.dto;
 
+import bookhive.bookhiveserver.domain.book.entity.Book;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -14,6 +15,7 @@ public class PostResponse {
     private String content;
     private LocalDateTime createdAt;
     private List<String> tags;
+    private Book book;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -24,5 +26,6 @@ public class PostResponse {
                 .stream()
                 .map(postTag -> postTag.getTag().getValue())
                 .collect(Collectors.toList());
+        this.book = post.getBook();
     }
 }
