@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AiCorrectTextRequest {
+public class CorrectTextRequest {
     private String content;
     private String processId = "";
 }

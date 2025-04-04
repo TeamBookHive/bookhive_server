@@ -3,10 +3,10 @@ package bookhive.bookhiveserver.domain.ai.dto.response;
 import lombok.Getter;
 
 @Getter
-public class CorrectErrorsResponse {
+public class CorrectTextResponse {
     private String content;
 
-    public CorrectErrorsResponse(String content) {
+    public CorrectTextResponse(String content) {
         this.content = content;
     }
 }
