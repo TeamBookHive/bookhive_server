@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
-import bookhive.bookhiveserver.domain.ai.service.ContentService;
+import bookhive.bookhiveserver.domain.ai.service.content.ContentService;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -56,7 +56,7 @@ public class ContentServiceIntegrationTest {
                 감정이 달팽이처럼 길게 늘여 뻗어 어디로 나의 갈 길을 알려주는지 관찰하자.""", "test");
 
         // when
-        String result = contentService.callToRecommend(request, token);
+        String result = contentService.recommendTags(request, token);
 
         // then
         assertThat(result).contains(",");

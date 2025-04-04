@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.ai.service;
+package bookhive.bookhiveserver.domain.ai.service.content;
 
 import bookhive.bookhiveserver.domain.ai.client.AiClient;
 import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
@@ -6,10 +6,8 @@ import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import bookhive.bookhiveserver.global.event.content.ContentFixedEvent;
-import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,9 +16,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +28,16 @@ public class ContentService {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    public String callToFix(ContentRequest request, String token) {
+    public String correctText(ContentRequest request, String token) {
         User user = userResolver.resolve(token);
 
-        String fixedContent = aiClient.correct(request.getContent()).getCorrectedContent();
-        eventPublisher.publishEvent(ContentFixedEvent.create(user.getId(), request.getProcessId(), fixedContent));
+        String correctedContent = aiClient.correct(request.getContent()).getCorrectedContent();
+        eventPublisher.publishEvent(ContentFixedEvent.create(user.getId(), request.getProcessId(), correctedContent));
 
-        return fixedContent;
+        return correctedContent;
     }
 
-    public String callToRecommend(ContentRequest request, String token) {
+    public String recommendTags(ContentRequest request, String token) {
         User user = userResolver.resolve(token);
 
         List<String> tagNames = tagRepository.findAllByUser(user).stream()
@@ -57,8 +53,6 @@ public class ContentService {
         User user = userResolver.resolve(token);
 
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
-
-        // 응답 검증 로직: 응답이 잘못된 형식이면 기본 추천 태그 리스트를 반환한다.
         if (!validateTagResponse(tagValues)){
             recommendTags.add(new RecommendTagResponse(null, "일상"));
             recommendTags.add(new RecommendTagResponse(null, "기타"));
@@ -87,14 +81,5 @@ public class ContentService {
         final Pattern TAG_PATTERN = Pattern.compile("^([가-힣a-zA-Z0-9][가-힣a-zA-Z0-9 ]*(, [가-힣a-zA-Z0-9][가-힣a-zA-Z0-9 ]*)*)$");
 
         return !response.equals("태그명, 태그명, 태그명") && TAG_PATTERN.matcher(response).matches();
-    }
-
-    public List<RecommendTagResponse> recommendTags(ContentRequest request, String token) {
-
-        String tagValues = callToRecommend(request, token);
-
-        List<RecommendTagResponse> tags = createRecommendTagList(tagValues, token);
-
-        return tags;
     }
 }

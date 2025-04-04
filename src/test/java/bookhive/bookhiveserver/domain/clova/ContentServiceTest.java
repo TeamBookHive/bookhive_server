@@ -4,12 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
-import bookhive.bookhiveserver.domain.ai.service.ContentService;
+import bookhive.bookhiveserver.domain.ai.service.content.ContentService;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import bookhive.bookhiveserver.domain.user.repository.UserRepository;
 import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
