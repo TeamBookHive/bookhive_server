@@ -1,8 +1,8 @@
 package bookhive.bookhiveserver.domain.ai.service.content;
 
 import bookhive.bookhiveserver.domain.ai.client.AiClient;
-import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
-import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.AiCorrectTextRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.AiRecommendTagsRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
@@ -29,7 +29,7 @@ public class ContentService {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    public String correctText(ContentRequest request, String token) {
+    public String correctText(AiCorrectTextRequest request, String token) {
         User user = userResolver.resolve(token);
 
         String correctedContent = aiClient.correct(request.getContent()).getCorrectedContent();
@@ -38,7 +38,7 @@ public class ContentService {
         return correctedContent;
     }
 
-    public String recommendTags(RecommendTagRequest request, String token) {
+    public String recommendTags(AiRecommendTagsRequest request, String token) {
         User user = userResolver.resolve(token);
 
         List<String> tagNames = tagRepository.findAllByUser(user).stream()

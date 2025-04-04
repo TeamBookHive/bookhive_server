@@ -1,19 +1,19 @@
 package bookhive.bookhiveserver.testUtil;
 
-import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
-import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.AiCorrectTextRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.AiRecommendTagsRequest;
 
 public class ContentDtoMother {
 
-    public static RecommendTagRequest createRecommendTagRequest(String content) {
-        RecommendTagRequest dto = new RecommendTagRequest();
+    public static AiRecommendTagsRequest createRecommendTagRequest(String content) {
+        AiRecommendTagsRequest dto = new AiRecommendTagsRequest();
         dto.setContent(content);
 
         return dto;
     }
 
-    public static ContentRequest createContentRequest(String content, String processId) {
-        ContentRequest dto = new ContentRequest();
+    public static AiCorrectTextRequest createContentRequest(String content, String processId) {
+        AiCorrectTextRequest dto = new AiCorrectTextRequest();
         dto.setContent(content);
         dto.setProcessId(processId);
 

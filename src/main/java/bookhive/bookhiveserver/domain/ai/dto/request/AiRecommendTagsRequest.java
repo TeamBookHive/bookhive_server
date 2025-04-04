@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecommendTagRequest {
+public class AiRecommendTagsRequest {
     private String content;
 }
