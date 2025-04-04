@@ -3,7 +3,7 @@ package bookhive.bookhiveserver.domain.clova;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagRequest;
 import bookhive.bookhiveserver.domain.ai.service.content.ContentService;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
@@ -50,10 +50,10 @@ public class ContentServiceIntegrationTest {
         // given
         String token = testUser.getToken();
 
-        ContentRequest request = ContentDtoMother.createContentRequest("""
+        RecommendTagRequest request = ContentDtoMother.createRecommendTagRequest("""
                 매일 짧은 시간만이라도 세련되고 아름다운 것.
                 고상한 품격이나 운치를 가진 것을 찾아 마주하고 내 마음 밭에 어떤 감정 꽃이 피어나는지 구경하자.
-                감정이 달팽이처럼 길게 늘여 뻗어 어디로 나의 갈 길을 알려주는지 관찰하자.""", "test");
+                감정이 달팽이처럼 길게 늘여 뻗어 어디로 나의 갈 길을 알려주는지 관찰하자.""");
 
         // when
         String result = contentService.recommendTags(request, token);

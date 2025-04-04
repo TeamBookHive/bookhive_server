@@ -1,6 +1,7 @@
 package bookhive.bookhiveserver.domain.ai.controller;
 
 import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.CorrectErrorsResponse;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.ai.service.content.ContentFacade;
@@ -35,7 +36,7 @@ public class ContentController {
     @PostMapping("/recommended-tags")
     @Operation(summary = "AI 태그 추천", description = "사용자 태그 리스트를 바탕으로 입력한 내용에 어울리는 태그를 추천합니다.")
     public ResponseEntity<List<RecommendTagResponse>> recommendTags(@RequestHeader("Authorization") String token,
-                                                                    @RequestBody ContentRequest request) {
+                                                                    @RequestBody RecommendTagRequest request) {
         List<RecommendTagResponse> tags = contentFacade.recommendTagsSimple(request, token);
 
         return ResponseEntity.ok(tags);

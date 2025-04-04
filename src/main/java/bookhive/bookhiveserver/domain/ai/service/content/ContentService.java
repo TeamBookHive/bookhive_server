@@ -2,6 +2,7 @@ package bookhive.bookhiveserver.domain.ai.service.content;
 
 import bookhive.bookhiveserver.domain.ai.client.AiClient;
 import bookhive.bookhiveserver.domain.ai.dto.request.ContentRequest;
+import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
@@ -37,7 +38,7 @@ public class ContentService {
         return correctedContent;
     }
 
-    public String recommendTags(ContentRequest request, String token) {
+    public String recommendTags(RecommendTagRequest request, String token) {
         User user = userResolver.resolve(token);
 
         List<String> tagNames = tagRepository.findAllByUser(user).stream()
