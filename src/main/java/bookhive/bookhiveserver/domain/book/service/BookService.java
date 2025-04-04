@@ -7,26 +7,21 @@ import bookhive.bookhiveserver.domain.book.dto.response.BookShowLatestResponse;
 import bookhive.bookhiveserver.domain.book.entity.Book;
 import bookhive.bookhiveserver.domain.book.repository.BookRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import bookhive.bookhiveserver.domain.user.repository.UserRepository;
-import bookhive.bookhiveserver.global.exception.ErrorMessage;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class BookService {
 
-    private final UserRepository userRepository;
+    private final UserResolver userResolver;
     private final BookRepository bookRepository;
 
     @Transactional
     public BookCreateResponse create(BookCreateRequest request, String token) {
-
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         // TO DO: Isbn으로 검증 후 중복 에러 반환으로 변경
         Book book = bookRepository.findByIsbn(request.getIsbn())
@@ -37,8 +32,7 @@ public class BookService {
     }
 
     public BookShowLatestResponse findLatestByUser(String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         Book book = bookRepository.findTopByUserOrderByCreatedAtDesc(user)
                 .orElse(null);

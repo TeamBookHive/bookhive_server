@@ -11,6 +11,7 @@ import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import bookhive.bookhiveserver.global.event.search.PostSearchedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import java.util.Collections;
@@ -30,16 +31,15 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class SearchService {
 
+    private final UserResolver userResolver;
     private final OpenAiClient aiClient;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
-    private final UserRepository userRepository;
 
     private final ApplicationEventPublisher eventPublisher;
 
     public AiSearchTypeResponse checkSearchType(SearchRequest request, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         eventPublisher.publishEvent(PostSearchedEvent.create(user.getId(), request.getQuestion()));
 
@@ -47,8 +47,7 @@ public class SearchService {
     }
 
     public List<PostResponse> searchByKeyword(String keyword, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         List<Post> posts = postRepository.findByUserAndKeyword(user, keyword);
 
@@ -58,8 +57,7 @@ public class SearchService {
     }
 
     public List<PostResponse> searchByAI(SearchRequest request, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         List<String> tagNames = tagRepository.findAllByUser(user).stream()
                 .map(Tag::getValue)
@@ -92,8 +90,7 @@ public class SearchService {
     }
 
     public List<PostResponse> getRandomPosts(String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         List<Post> posts = postRepository.findByUser(user);
         Collections.shuffle(posts);

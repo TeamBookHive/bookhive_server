@@ -7,6 +7,7 @@ import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
 import bookhive.bookhiveserver.domain.ai.service.ContentService;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ContentServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserResolver userResolver;
 
     @InjectMocks
     private ContentService contentService;
@@ -29,9 +30,9 @@ public class ContentServiceTest {
 
     @BeforeEach
     void login() {
-        testUser = User.create("testDeiceId", "testToken");
+        testUser = User.create("testDeviceId", "testToken");
 
-        when(userRepository.findByToken("testToken")).thenReturn(Optional.of(testUser));
+        when(userResolver.resolve("testToken")).thenReturn(testUser);
     }
 
     @Test

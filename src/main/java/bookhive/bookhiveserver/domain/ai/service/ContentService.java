@@ -7,6 +7,7 @@ import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import bookhive.bookhiveserver.global.event.content.ContentFixedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import java.util.ArrayList;
@@ -24,15 +25,15 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
+
+    private final UserResolver userResolver;
     private final AiClient aiClient;
-    private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
     private final ApplicationEventPublisher eventPublisher;
 
     public String callToFix(ContentRequest request, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         String fixedContent = aiClient.correct(request.getContent()).getCorrectedContent();
         eventPublisher.publishEvent(ContentFixedEvent.create(user.getId(), request.getProcessId(), fixedContent));
@@ -41,8 +42,8 @@ public class ContentService {
     }
 
     public String callToRecommend(ContentRequest request, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
+
         List<String> tagNames = tagRepository.findAllByUser(user).stream()
                 .map(Tag::getValue)
                 .collect(Collectors.toList());
@@ -53,8 +54,7 @@ public class ContentService {
     }
 
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
 
