@@ -88,4 +88,13 @@ public class ContentService {
 
         return !response.equals("태그명, 태그명, 태그명") && TAG_PATTERN.matcher(response).matches();
     }
+
+    public List<RecommendTagResponse> recommendTags(ContentRequest request, String token) {
+
+        String tagValues = callToRecommend(request, token);
+
+        List<RecommendTagResponse> tags = createRecommendTagList(tagValues, token);
+
+        return tags;
+    }
 }
