@@ -35,7 +35,7 @@ public class ContentServiceTest {
     }
 
     @Test
-    void 잘못된_응답_형식이라면_기본_추천_태그_리스트를_반환한다() {
+    void 태그_추천_정상_잘못된_응답_형식이라면_기본_추천_태그_리스트를_반환한다() {
         // given
         String token = testUser.getToken();
 
