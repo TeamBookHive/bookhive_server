@@ -37,7 +37,7 @@ public class ContentController {
     @Operation(summary = "AI 태그 추천", description = "사용자 태그 리스트를 바탕으로 입력한 내용에 어울리는 태그를 추천합니다.")
     public ResponseEntity<List<RecommendTagResponse>> recommendTags(@RequestHeader("Authorization") String token,
                                                                     @RequestBody RecommendTagsRequest request) {
-        List<RecommendTagResponse> tags = contentFacade.recommendTagsSimple(request, token);
+        List<RecommendTagResponse> tags = contentFacade.recommendTagsPersonalized(request, token);
 
         return ResponseEntity.ok(tags);
     }
