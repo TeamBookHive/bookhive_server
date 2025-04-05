@@ -1,10 +1,11 @@
-package bookhive.bookhiveserver.domain.clova;
+package bookhive.bookhiveserver.domain.ai;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagsRequest;
 import bookhive.bookhiveserver.domain.ai.service.content.ContentService;
+import bookhive.bookhiveserver.domain.post.repository.PostRepository;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
@@ -30,7 +31,7 @@ public class ContentServiceIntegrationTest {
     @Autowired
     private ContentService contentService;
 
-    User testUser;
+    private User testUser;
 
     @BeforeEach
     void init() {

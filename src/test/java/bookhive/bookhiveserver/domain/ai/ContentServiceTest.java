@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.clova;
+package bookhive.bookhiveserver.domain.ai;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -29,7 +29,6 @@ public class ContentServiceTest {
     @BeforeEach
     void login() {
         testUser = User.create("testDeviceId", "testToken");
-
         when(userResolver.resolve("testToken")).thenReturn(testUser);
     }
 
