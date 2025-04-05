@@ -20,12 +20,14 @@ public class ContentFacade {
         return contentService.createRecommendTagList(tagValues, token);
     }
 
-//    public List<RecommendTagResponse> recommendTagsAdvanced(RecommendTagRequest request, String token) {
-//
-//        List<String> sortedTags = contentService.sortTagsByContentRelevance(request, token);
-//        List<String> relatedTags = contentService.selectRelevantTags();
-//        List<String> contentService.generateNewTags();
-//
-//        return contentService.createRecommendTagList(tagValues, token);
-//    }
+    public List<RecommendTagResponse> recommendTagsPersonalized(RecommendTagsRequest request, String token) {
+
+        List<String> sortedTags = contentService.sortTagsByContentRelevance(request, token);
+        String relevantTags = contentService.recommendRelevantOriginTags(sortedTags, request, token);
+        String newTags = contentService.recommendRelevantNewTags(request, token);
+
+        String tagValues = relevantTags + newTags;
+
+        return contentService.createRecommendTagList(tagValues, token);
+    }
 }

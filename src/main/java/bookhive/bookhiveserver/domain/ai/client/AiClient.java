@@ -11,6 +11,12 @@ public interface AiClient {
 
     AiRecommendTagsResponse recommendTags(String content, String originTags);
 
+    AiRecommendTagsResponse sortTags(String content, String originTags);
+
+    AiRecommendTagsResponse recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags);
+
+    AiRecommendTagsResponse recommendNewTags(String content, String originTags);
+
     AiSearchTypeResponse checkSearchType(String question);
 
     AiKeywordsResponse extractKeywords(String question, String originTags);
