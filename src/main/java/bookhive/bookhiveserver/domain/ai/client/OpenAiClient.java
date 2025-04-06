@@ -16,7 +16,9 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.ResponseFormat;
 import org.springframework.ai.openai.api.ResponseFormat.Type;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -295,14 +297,14 @@ public class OpenAiClient implements AiClient {
     private String extractSafeContent(ChatResponse response) {
 
         if (response == null) {
-            throw new RuntimeException(ErrorMessage.OPEN_AI_SERVER_ERROR.toString());
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, ErrorMessage.OPEN_AI_SERVER_ERROR.toString());
         }
 
         AssistantMessage message = response.getResult().getOutput();
         Map<String, Object> meta = message.getMetadata();
 
         if (!Objects.toString(meta.get("refusal"), "").isBlank()) {
-            throw new RuntimeException(ErrorMessage.OPEN_AI_REFUSAL.toString());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.OPEN_AI_REFUSAL.toString());
         }
 
         return message.getText();
