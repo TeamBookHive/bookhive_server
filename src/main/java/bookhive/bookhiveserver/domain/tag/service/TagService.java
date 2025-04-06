@@ -5,7 +5,7 @@ import bookhive.bookhiveserver.domain.tag.dto.response.TagResponse;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class TagService {
+
+    private final UserResolver userResolver;
     private final TagRepository tagRepository;
-    private final UserRepository userRepository;
 
     public List<TagResponse> getTags(String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
         List<Tag> tags = tagRepository.findAllByUserOrderByValue(user);
 
         return tags.stream().map(TagResponse::new).collect(Collectors.toList());
@@ -36,8 +36,7 @@ public class TagService {
 
     @Transactional
     public Tag createTag(String value, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
         Tag tag = Tag.create(value, user);
 
         // 태그 중복 로직 검증 (단, 해당 API는 현재 미사용이므로 보류)
@@ -47,8 +46,7 @@ public class TagService {
 
     @Transactional
     public List<Tag> updateTag(List<TagRequest> tagRequests, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         // 개별 태그 길이 검사
         tagRequests.stream()
@@ -95,8 +93,7 @@ public class TagService {
 
 
     public void deleteTag(String tagId, String token) {
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         Tag tag = tagRepository.findById(Long.valueOf(tagId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagId));

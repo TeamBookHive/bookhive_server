@@ -1,14 +1,13 @@
-package bookhive.bookhiveserver.domain.clova;
+package bookhive.bookhiveserver.domain.ai;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
-import bookhive.bookhiveserver.domain.ai.service.ContentService;
+import bookhive.bookhiveserver.domain.ai.service.content.ContentService;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ContentServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserResolver userResolver;
 
     @InjectMocks
     private ContentService contentService;
@@ -29,13 +28,12 @@ public class ContentServiceTest {
 
     @BeforeEach
     void login() {
-        testUser = User.create("testDeiceId", "testToken");
-
-        when(userRepository.findByToken("testToken")).thenReturn(Optional.of(testUser));
+        testUser = User.create("testDeviceId", "testToken");
+        when(userResolver.resolve("testToken")).thenReturn(testUser);
     }
 
     @Test
-    void 잘못된_응답_형식이라면_기본_추천_태그_리스트를_반환한다() {
+    void 태그_추천_정상_잘못된_응답_형식이라면_기본_추천_태그_리스트를_반환한다() {
         // given
         String token = testUser.getToken();
 

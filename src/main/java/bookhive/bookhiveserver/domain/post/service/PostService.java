@@ -12,7 +12,7 @@ import bookhive.bookhiveserver.domain.tag.dto.request.TagRequest;
 import bookhive.bookhiveserver.domain.tag.entity.Tag;
 import bookhive.bookhiveserver.domain.tag.repository.TagRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
-import bookhive.bookhiveserver.domain.user.repository.UserRepository;
+import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import bookhive.bookhiveserver.global.event.content.ContentSavedEvent;
 import bookhive.bookhiveserver.global.event.post.PostCreatedEvent;
 import bookhive.bookhiveserver.global.exception.ErrorMessage;
@@ -32,8 +32,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
+    private final UserResolver userResolver;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final BookRepository bookRepository;
@@ -42,8 +43,7 @@ public class PostService {
 
     public List<PostResponse> getPosts(String token) {
 
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         List<Post> posts = postRepository.findByUserOrderByCreatedAtDesc(user);
 
@@ -53,8 +53,7 @@ public class PostService {
     @Transactional
     public Post createPost(PostRequest request, String token) {
 
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         String content = request.getContent();
 
@@ -103,8 +102,7 @@ public class PostService {
     @Transactional
     public Post updatePost(String postId, String newContent, List<TagRequest> newTags, String token) {
 
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         if (newContent.length() > 1000)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString());
@@ -137,8 +135,7 @@ public class PostService {
     @Transactional
     public void deletePost(String postId, String token) {
 
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.toString()));
+        User user = userResolver.resolve(token);
 
         Post post = postRepository.findById(Long.valueOf(postId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST.toString() + postId));

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentRequest {
+public class CorrectTextRequest {
     private String content;
     private String processId = "";
 }

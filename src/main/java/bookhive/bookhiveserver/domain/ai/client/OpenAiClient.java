@@ -16,7 +16,10 @@ import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.ResponseFormat;
 import org.springframework.ai.openai.api.ResponseFormat.Type;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -67,20 +70,102 @@ public class OpenAiClient implements AiClient {
     public AiRecommendTagsResponse recommendTags(String content, String originTags) {
 
         String prompt = """
-        당신은 OCR 기술로 인식된 책 문장 데이터를 바탕으로 어울리는 태그를 추천하는 AI입니다. 다음 제약 사항을 바탕으로 가장 적절한 태그들을 추천해 주세요.
-
-        # 기존 태그 목록
-        기존 태그: %s
-
-        # 제약 사항
-        - 태그의 총 개수는 3개 이상 5개 이하여야 합니다. 최종 결과물은 반드시 새로운 태그 3개와 기존 태그 최소 0개 최대 2개로 구성되어야 합니다.
-        - 새로운 태그: 기존 태그들과 중복되지 않는 새로운 태그 3개를 반드시 생성하여 추천해야 합니다. 새로운 태그의 개수는 정확히 3개이며, 2개 또는 4개가 될 수 없습니다.
-        - 기존 태그: 기존 태그 목록 중 어울리는 태그를 0개 이상 2개 이하 선택할 수 있습니다. 어울리는 태그가 없다면 선택하지 않아도 됩니다.
-        - 출력은 오직 태그 리스트만 반환해야 합니다. 절대로 형식에서 벗어난 부연 설명, 대답, 추가적인 텍스트, 특수 문자를 포함하지 마세요. 제약 사항을 어길 경우 불이익이 존재할 수 있습니다.
-        """.formatted(originTags);
+            당신은 OCR 기술로 인식된 책 문장 데이터를 바탕으로 어울리는 태그를 추천하는 AI입니다. 다음 제약 사항을 바탕으로 가장 적절한 태그들을 추천해 주세요.
+    
+            # 기존 태그 목록
+            기존 태그: %s
+    
+            # 제약 사항
+            - 태그의 총 개수는 3개 이상 5개 이하여야 합니다. 최종 결과물은 반드시 새로운 태그 3개와 기존 태그 최소 0개 최대 2개로 구성되어야 합니다.
+            - 새로운 태그: 기존 태그들과 중복되지 않는 새로운 태그 3개를 반드시 생성하여 추천해야 합니다. 새로운 태그의 개수는 정확히 3개이며, 2개 또는 4개가 될 수 없습니다.
+            - 기존 태그: 기존 태그 목록 중 어울리는 태그를 0개 이상 2개 이하 선택할 수 있습니다. 어울리는 태그가 없다면 선택하지 않아도 됩니다.
+            - 출력은 오직 태그 리스트만 반환해야 합니다. 절대로 형식에서 벗어난 부연 설명, 대답, 추가적인 텍스트, 특수 문자를 포함하지 마세요. 제약 사항을 어길 경우 불이익이 존재할 수 있습니다.
+            """.formatted(originTags);
 
         return callWithStructuredOutput(content, prompt, AiRecommendTagsResponse.class);
     }
+
+    @Override
+    public AiRecommendTagsResponse sortTags(String content, String originTags) {
+        String prompt = """
+            당신은 독서 기록에 어울리는 태그를 정렬하는 AI입니다.
+
+            사용자는 책을 읽으며 인상 깊은 문장을 기록하고, 이를 분류하기 위해 태그를 사용합니다.
+            아래는 사용자가 현재 가지고 있는 태그 목록입니다.
+
+            - 기존 태그: %s
+
+            당신의 역할은 이 태그들을 분석하여, 입력된 기록과의 **연관성 기준으로 내림차순 정렬**하는 것입니다.
+            연관성은 의미적 유사성, 주제의 일치도, 감정 또는 메시지의 유사성 등을 기준으로 판단하세요.
+
+            이제 아래 문장을 기준으로, 기존 태그들을 **연관성이 높은 순서대로 정렬하여 출력**해 주세요.
+            - 문장: %s
+
+            ### 출력 조건
+            - 반드시 모든 기존 태그를 포함하여, 연관성이 높은 순서대로 출력해야 합니다.
+            - 어떤 태그라도 누락되지 않아야 하며, 입력된 기존 태그는 모두 포함되어야 합니다.
+            - 설명이나 부연 문장 없이 태그만 출력해야 합니다.
+            """.formatted(originTags, content);
+
+        return callWithStructuredOutput(content, prompt, AiRecommendTagsResponse.class);
+    }
+
+    @Override
+    public Mono<AiRecommendTagsResponse> recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags) {
+        String prompt = """
+            당신은 사용자의 독서 기록을 분석하여, 새 기록이 어떤 기존 태그 분류에 속하는지 판단하는 AI입니다.
+            
+            아래에는 추천 가능한 태그 후보 목록과,
+            각 태그에 해당하는 과거 기록들이 함께 주어집니다.
+            사용자가 각 태그에 어떤 기준으로 기록을 묶는 경향이 있는지를 파악하고,
+            새로운 기록이 이 중 어디에 가장 잘 어울리는지 분석해 주세요.
+            
+            ### 태그 후보 목록 (이 중에서만 선택 가능):
+            %s
+            
+            ### 각 태그에 포함된 과거 기록:
+            %s
+            
+            - 위 기록들을 바탕으로, 각 태그 분류에 포함된 구절들의 **공통된 성격이나 주제, 표현 방식**을 파악하세요.
+            - 사용자가 어떤 경향으로 태그를 붙여왔는지 분석하는 것이 핵심입니다.
+            - 아래에 제시된 새로운 기록을 분석하여, 가장 유사한 성격을 가진 태그를 0개 이상 2개 이하로 추천하세요.
+            
+            ### 새로운 기록:
+            %s
+            
+            - 태그는 반드시 태그 후보 목록 중에서만 선택할 수 있습니다.
+            - 태그 수는 0개 이상 2개 이하만 선택 가능합니다.
+            - 부가 설명 없이, 추천한 태그만 리스트 형식으로 출력하세요.
+            """.formatted(extractedRelevantTags, postsIncludeRelevantTags, content);
+
+        return callWithStructuredOutputAsync(content, prompt, AiRecommendTagsResponse.class);
+
+    };
+
+    @Override
+    public Mono<AiRecommendTagsResponse> recommendNewTags(String content, String originTags) {
+        String prompt = """
+            당신은 독서 기록에 적절한 태그를 추천하는 AI입니다.
+
+            사용자는 책을 읽으며 마음에 드는 문장들을 기록하고, 이를 분류하기 위해 태그를 사용합니다.
+            다음은 사용자가 현재 소유한 태그 목록입니다:
+            - 기존 태그: %s
+
+            당신의 역할은 다음 두 가지입니다:
+            1. 사용자의 태그 스타일을 분석합니다.
+            - 예: 포괄적인 주제를 선호하는지, 세부 개념 중심인지, 한 단어 또는 짧은 구 형태를 선호하는지 등을 파악합니다.
+            2. 입력된 문장에 어울리는 **새로운 태그 3개**를 추천합니다.
+
+            ### 추천 조건
+            - 반드시 기존 태그와 **중복되지 않아야 합니다**.
+            - 사용자의 **태깅 스타일을 반영하되**, 실제 사람들이 자주 사용할 법한 **현실적이고 자연스러운 태그**만 추천하세요.
+            - 검색이나 분류에 유용하지 않은 **지나치게 인위적인 태그는 피하세요.**
+            - 각 태그는 **10자 이내의 단어나 짧은 구**여야 합니다.
+            - 설명 없이 태그만 출력하세요.
+        """.formatted(originTags);
+
+        return callWithStructuredOutputAsync(content, prompt, AiRecommendTagsResponse.class);
+    };
 
     @Override
     public AiSearchTypeResponse checkSearchType(String content) {
@@ -188,17 +273,38 @@ public class OpenAiClient implements AiClient {
         return outputConverter.convert(extractSafeContent(chatResponse));
     }
 
+    private <T> Mono<T> callWithStructuredOutputAsync(String user, String system, Class<T> clazz) {
+
+        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(clazz);
+        String jsonSchema = outputConverter.getJsonSchema();
+
+        Prompt prompt = new Prompt(user,
+                OpenAiChatOptions.builder()
+                        .responseFormat(new ResponseFormat(Type.JSON_SCHEMA, jsonSchema))
+                        .build());
+
+        Mono<T> fluxResponse = this.chatClient.prompt(prompt)
+                .system(system)
+                .stream()
+                .content()
+                .collectList()
+                .map(list -> String.join("", list))
+                .map(outputConverter::convert);
+
+        return fluxResponse;
+    }
+
     private String extractSafeContent(ChatResponse response) {
 
         if (response == null) {
-            throw new RuntimeException(ErrorMessage.OPEN_AI_SERVER_ERROR.toString());
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, ErrorMessage.OPEN_AI_SERVER_ERROR.toString());
         }
 
         AssistantMessage message = response.getResult().getOutput();
         Map<String, Object> meta = message.getMetadata();
 
         if (!Objects.toString(meta.get("refusal"), "").isBlank()) {
-            throw new RuntimeException(ErrorMessage.OPEN_AI_REFUSAL.toString());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.OPEN_AI_REFUSAL.toString());
         }
 
         return message.getText();

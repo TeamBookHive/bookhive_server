@@ -2,7 +2,7 @@ package bookhive.bookhiveserver;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import bookhive.bookhiveserver.domain.ai.service.ContentService;
+import bookhive.bookhiveserver.domain.ai.service.content.ContentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
