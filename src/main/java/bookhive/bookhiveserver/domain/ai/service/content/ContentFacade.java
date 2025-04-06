@@ -2,6 +2,7 @@ package bookhive.bookhiveserver.domain.ai.service.content;
 
 import bookhive.bookhiveserver.domain.ai.dto.request.RecommendTagsRequest;
 import bookhive.bookhiveserver.domain.ai.dto.response.RecommendTagResponse;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,11 +24,13 @@ public class ContentFacade {
     public List<RecommendTagResponse> recommendTagsPersonalized(RecommendTagsRequest request, String token) {
 
         List<String> sortedTags = contentService.sortTagsByContentRelevance(request, token);
-        String relevantTags = contentService.recommendRelevantOriginTags(sortedTags, request, token);
-        String newTags = contentService.recommendRelevantNewTags(request, token);
+        List<String> relevantTags = contentService.recommendRelevantOriginTags(sortedTags, request, token);
+        List<String> newTags = contentService.recommendRelevantNewTags(request, token);
 
-        String tagValues = relevantTags + newTags;
+        List<String> resultTags = new ArrayList<>();
+        if (relevantTags != null) resultTags.addAll(relevantTags);
+        resultTags.addAll(newTags);
 
-        return contentService.createRecommendTagList(tagValues, token);
+        return contentService.createRecommendTagList(String.join(", ", resultTags), token);
     }
 }

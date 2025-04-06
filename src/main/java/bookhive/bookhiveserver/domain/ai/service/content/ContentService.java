@@ -58,8 +58,8 @@ public class ContentService {
         return aiClient.sortTags(request.getContent(), originTags).getTags();
     }
 
-    public String recommendRelevantOriginTags(List<String> sortedTags, RecommendTagsRequest request, String token) {
-        if (sortedTags == null) return "";
+    public List<String> recommendRelevantOriginTags(List<String> sortedTags, RecommendTagsRequest request, String token) {
+        if (sortedTags == null) return null;
 
         User user = userResolver.resolve(token);
 
@@ -81,14 +81,14 @@ public class ContentService {
                 String.join(", ", extractedRelevantTags)
         );
 
-        return String.join(", ", response.getTags());
+        return response.getTags();
     }
 
-    public String recommendRelevantNewTags(RecommendTagsRequest request, String token) {
+    public List<String> recommendRelevantNewTags(RecommendTagsRequest request, String token) {
         User user = userResolver.resolve(token);
         String originTags = convertTagsToString(user);
 
-        return String.join(", ", aiClient.recommendNewTags(request.getContent(), originTags).getTags());
+        return aiClient.recommendNewTags(request.getContent(), originTags).getTags();
     }
 
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {
