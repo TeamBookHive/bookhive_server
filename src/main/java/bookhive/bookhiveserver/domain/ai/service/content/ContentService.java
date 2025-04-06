@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ public class ContentService {
         return aiClient.sortTags(request.getContent(), originTags).getTags();
     }
 
-    public List<String> recommendRelevantOriginTags(List<String> sortedTags, RecommendTagsRequest request, String token) {
+    public Mono<List<String>> recommendRelevantOriginTags(List<String> sortedTags, RecommendTagsRequest request, String token) {
         if (sortedTags == null) return null;
 
         User user = userResolver.resolve(token);
@@ -75,27 +76,27 @@ public class ContentService {
 
         String postsIncludeRelevantTags = convertTagPostMapToString(tagToPosts);
 
-        AiRecommendTagsResponse response = aiClient.recommendOriginTags(
+        Mono<AiRecommendTagsResponse> response = aiClient.recommendOriginTags(
                 request.getContent(),
                 postsIncludeRelevantTags,
                 String.join(", ", extractedRelevantTags)
         );
 
-        return response.getTags();
+        return response.map(AiRecommendTagsResponse::getTags);
     }
 
-    public List<String> recommendRelevantNewTags(RecommendTagsRequest request, String token) {
+    public Mono<List<String>> recommendRelevantNewTags(RecommendTagsRequest request, String token) {
         User user = userResolver.resolve(token);
         String originTags = convertTagsToString(user);
 
-        return aiClient.recommendNewTags(request.getContent(), originTags).getTags();
+        return aiClient.recommendNewTags(request.getContent(), originTags).map(AiRecommendTagsResponse::getTags);
     }
 
     public List<RecommendTagResponse> createRecommendTagList(String tagValues, String token) {
         User user = userResolver.resolve(token);
 
         List<RecommendTagResponse> recommendTags = new ArrayList<>();
-        if (!validateTagResponse(tagValues)){
+        if (tagValues == null || !validateTagResponse(tagValues)){
             recommendTags.add(new RecommendTagResponse(null, "일상"));
             recommendTags.add(new RecommendTagResponse(null, "기타"));
 

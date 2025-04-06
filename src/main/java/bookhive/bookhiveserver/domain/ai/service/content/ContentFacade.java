@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -24,12 +25,19 @@ public class ContentFacade {
     public List<RecommendTagResponse> recommendTagsPersonalized(RecommendTagsRequest request, String token) {
 
         List<String> sortedTags = contentService.sortTagsByContentRelevance(request, token);
-        List<String> relevantTags = contentService.recommendRelevantOriginTags(sortedTags, request, token);
-        List<String> newTags = contentService.recommendRelevantNewTags(request, token);
+        Mono<List<String>> relevantTagsMono = contentService.recommendRelevantOriginTags(sortedTags, request, token);
+        Mono<List<String>> newTagsMono = contentService.recommendRelevantNewTags(request, token);
 
-        List<String> resultTags = new ArrayList<>();
-        if (relevantTags != null) resultTags.addAll(relevantTags);
-        resultTags.addAll(newTags);
+        List<String> resultTags = Mono.zip(relevantTagsMono, newTagsMono)
+                .map(tuple -> {
+                    List<String> mergedTags = new ArrayList<>();
+                    List<String> relevantTags = tuple.getT1();
+                    List<String> newTags = tuple.getT2();
+                    mergedTags.addAll(relevantTags);
+                    mergedTags.addAll(newTags);
+                    return mergedTags;
+                })
+                .block();
 
         return contentService.createRecommendTagList(String.join(", ", resultTags), token);
     }

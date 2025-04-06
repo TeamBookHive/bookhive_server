@@ -17,6 +17,7 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.ResponseFormat;
 import org.springframework.ai.openai.api.ResponseFormat.Type;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -108,7 +109,7 @@ public class OpenAiClient implements AiClient {
     }
 
     @Override
-    public AiRecommendTagsResponse recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags) {
+    public Mono<AiRecommendTagsResponse> recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags) {
         String prompt = """
             당신은 사용자의 독서 기록을 분석하여, 새 기록이 어떤 기존 태그 분류에 속하는지 판단하는 AI입니다.
             
@@ -135,12 +136,12 @@ public class OpenAiClient implements AiClient {
             - 부가 설명 없이, 추천한 태그만 리스트 형식으로 출력하세요.
             """.formatted(extractedRelevantTags, postsIncludeRelevantTags, content);
 
-        return callWithStructuredOutput(content, prompt, AiRecommendTagsResponse.class);
+        return callWithStructuredOutputAsync(content, prompt, AiRecommendTagsResponse.class);
 
     };
 
     @Override
-    public AiRecommendTagsResponse recommendNewTags(String content, String originTags) {
+    public Mono<AiRecommendTagsResponse> recommendNewTags(String content, String originTags) {
         String prompt = """
             당신은 독서 기록에 적절한 태그를 추천하는 AI입니다.
 
@@ -161,7 +162,7 @@ public class OpenAiClient implements AiClient {
             - 설명 없이 태그만 출력하세요.
         """.formatted(originTags);
 
-        return callWithStructuredOutput(content, prompt, AiRecommendTagsResponse.class);
+        return callWithStructuredOutputAsync(content, prompt, AiRecommendTagsResponse.class);
     };
 
     @Override
@@ -268,6 +269,27 @@ public class OpenAiClient implements AiClient {
                 .chatResponse();
 
         return outputConverter.convert(extractSafeContent(chatResponse));
+    }
+
+    private <T> Mono<T> callWithStructuredOutputAsync(String user, String system, Class<T> clazz) {
+
+        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(clazz);
+        String jsonSchema = outputConverter.getJsonSchema();
+
+        Prompt prompt = new Prompt(user,
+                OpenAiChatOptions.builder()
+                        .responseFormat(new ResponseFormat(Type.JSON_SCHEMA, jsonSchema))
+                        .build());
+
+        Mono<T> fluxResponse = this.chatClient.prompt(prompt)
+                .system(system)
+                .stream()
+                .content()
+                .collectList()
+                .map(list -> String.join("", list))
+                .map(outputConverter::convert);
+
+        return fluxResponse;
     }
 
     private String extractSafeContent(ChatResponse response) {
