@@ -3,6 +3,7 @@ package bookhive.bookhiveserver.domain.post.dto.mapper;
 import bookhive.bookhiveserver.domain.book.dto.response.BookDetail;
 import bookhive.bookhiveserver.domain.post.dto.response.PostCreateResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
+import bookhive.bookhiveserver.domain.tag.dto.response.TagResponse;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ public class PostDtoMapper {
                 .tags(Optional.ofNullable(post.getPostTags())
                         .orElse(Collections.emptyList())
                         .stream()
-                        .map(postTag -> postTag.getTag().getValue())
+                        .map(postTag -> new TagResponse(postTag.getTag()))
                         .collect(Collectors.toList()))
                 .book(Optional.ofNullable(post.getBook())
                         .map(BookDetail::new)

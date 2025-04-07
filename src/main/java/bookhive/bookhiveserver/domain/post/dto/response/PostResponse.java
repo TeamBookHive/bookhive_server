@@ -2,6 +2,7 @@ package bookhive.bookhiveserver.domain.post.dto.response;
 
 import bookhive.bookhiveserver.domain.book.dto.response.BookDetail;
 import bookhive.bookhiveserver.domain.post.entity.Post;
+import bookhive.bookhiveserver.domain.tag.dto.response.TagResponse;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +15,7 @@ public class PostResponse {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
-    private List<String> tags;
+    private List<TagResponse> tags;
     private BookDetail book;
 
     public PostResponse(Post post) {
@@ -24,7 +25,7 @@ public class PostResponse {
         this.tags = Optional.ofNullable(post.getPostTags())
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(postTag -> postTag.getTag().getValue())
+                .map(postTag -> new TagResponse(postTag.getTag()))
                 .collect(Collectors.toList());
         this.book = Optional.ofNullable(post.getBook())
                 .map(BookDetail::new)
