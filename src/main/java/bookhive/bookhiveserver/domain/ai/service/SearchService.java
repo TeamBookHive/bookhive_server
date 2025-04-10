@@ -66,8 +66,6 @@ public class SearchService {
 
         AiKeywordsResponse keywords = aiClient.extractKeywords(request.getQuestion(), originTags);
 
-        log.info("추출한 키워드:" + keywords.getKeywords());
-
         List<Post> posts = postRepository.findByUser(user);
 
         // 키워드가 태그 리스트에 존재하거나, 내용에 포함된 게시글 조회

@@ -19,7 +19,4 @@
         <appender-ref ref="CATALINA" />
     </logger>
 
-    <root level="info">
-        <appender-ref ref="STDOUT" />
-    </root>
 </configuration>
