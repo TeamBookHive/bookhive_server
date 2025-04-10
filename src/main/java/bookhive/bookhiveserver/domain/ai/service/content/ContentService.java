@@ -13,6 +13,7 @@ import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
 import bookhive.bookhiveserver.global.event.content.ContentFixedEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -60,7 +61,7 @@ public class ContentService {
     }
 
     public Mono<List<String>> recommendRelevantOriginTags(List<String> sortedTags, RecommendTagsRequest request, String token) {
-        if (sortedTags == null) return null;
+        if (sortedTags == null) return Mono.just(Collections.emptyList());
 
         User user = userResolver.resolve(token);
 
