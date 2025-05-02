@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
+@Getter
 public class PostDetail {
     private Long id;
     private String content;
