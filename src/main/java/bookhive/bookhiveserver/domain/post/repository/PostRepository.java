@@ -1,5 +1,6 @@
 package bookhive.bookhiveserver.domain.post.repository;
 
+import bookhive.bookhiveserver.domain.book.entity.Book;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByUser(User user);
     List<Post> findByUserOrderByCreatedAtDesc(User user);
+    List<Post> findByUserAndBookOrderByCreatedAtDesc(User user, Book book);
 
     @Query("select distinct p from Post p " +
             "left join p.postTags pt " +

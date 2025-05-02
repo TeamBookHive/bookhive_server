@@ -15,7 +15,6 @@ public class BookCreateRequest {
     @NotBlank(message = "책 저자는 필수로 입력해야 합니다.")
     private String author;
 
-    @NotBlank(message = "책 ISBN은 필수로 입력해야 합니다.")
     private String isbn;
 
     @Size(max = 2048, message = "이미지 URL은 2048자 이하만 가능합니다.")

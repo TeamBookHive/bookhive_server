@@ -43,7 +43,7 @@ public class Book {
     @Column(name = "author", nullable = false)
     private String author;
 
-    @Column(name = "isbn", length = 20, nullable = false, unique = true)
+    @Column(name = "isbn", length = 20, unique = true)
     private String isbn;
 
     @Column(name = "image_url", length = 2048)

@@ -9,6 +9,7 @@ public enum ErrorMessage {
     INVALID_BOOK("존재하지 않는 책입니다. "),
     UNAUTHORIZED_POST("해당 게시글에 접근 권한이 없습니다. "),
     UNAUTHORIZED_TAG("해당 태그에 접근 권한이 없습니다. "),
+    UNAUTHORIZED_BOOK("해당 책에 접근 권한이 없습니다. "),
     OPEN_AI_REFUSAL("안전상의 이유로 OpenAI 응답 생성이 거절되었습니다."),
     OPEN_AI_SERVER_ERROR("OpenAI API 통신에 실패했습니다.")
     ;
