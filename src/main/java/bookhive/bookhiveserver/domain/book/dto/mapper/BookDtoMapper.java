@@ -12,13 +12,14 @@ import java.util.List;
 
 public class BookDtoMapper {
 
-    public static BookCreateResponse toBookCreateResponse(Long id, String title, String author, String imageUrl, LocalDateTime createdAt) {
+    public static BookCreateResponse toBookCreateResponse(Book book) {
         return BookCreateResponse.builder()
-                .id(id)
-                .title(title)
-                .author(author)
-                .imageUrl(imageUrl)
-                .createdAt(createdAt)
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .imageUrl(book.getImageUrl())
+                .isbn(book.getIsbn())
+                .createdAt(book.getCreatedAt())
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class BookDtoMapper {
                 .map(book -> BookShowResponse.builder()
                         .id(book.getId())
                         .title(book.getTitle())
+                        .author(book.getAuthor())
                         .imageUrl(book.getImageUrl())
                         .createdAt(book.getCreatedAt())
                         .build())

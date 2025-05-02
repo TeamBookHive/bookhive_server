@@ -48,7 +48,7 @@ public class BookService {
                             Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
         }
 
-        return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
+        return BookDtoMapper.toBookCreateResponse(book);
     }
 
     public List<BookShowResponse> findAll(String token) {
