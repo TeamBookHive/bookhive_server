@@ -68,4 +68,17 @@ public class BookService {
 
         return BookDtoMapper.toBookShowDetailResponse(book, posts);
     }
+
+    public void delete(String token, Long bookId) {
+        User user = userResolver.resolve(token);
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
+
+        if (!book.getUser().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_BOOK.toString());
+        }
+
+        bookRepository.delete(book);
+    }
 }

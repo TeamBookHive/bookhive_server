@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,5 +44,13 @@ public class BookController {
     public ResponseEntity<BookShowDetailResponse> showDetail(@RequestHeader("Authorization") String token,
                                                              @PathVariable Long bookId) {
         return ResponseEntity.ok(bookService.showDetail(token, bookId));
+    }
+
+    @DeleteMapping("/{bookId}")
+    @Operation(summary = "책 삭제", description = "사용자의 특정 책을 삭제합니다.")
+    public ResponseEntity<Void> delete(@RequestHeader("Authorization") String token,
+                                       @PathVariable Long bookId) {
+        bookService.delete(token, bookId);
+        return ResponseEntity.noContent().build();
     }
 }
