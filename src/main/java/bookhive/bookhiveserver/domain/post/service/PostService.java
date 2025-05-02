@@ -94,11 +94,11 @@ public class PostService {
             } else {
                 // TO DO: 잘못된 요청입니다. 에러 반환
                 if (bookDto.getIsbn() != null) {
-                    book = bookRepository.findByIsbn(bookDto.getIsbn())
+                    book = bookRepository.findByUserAndIsbn(user, bookDto.getIsbn())
                             .orElseGet(() -> bookRepository.save(
                                     Book.create(bookDto.getTitle(), bookDto.getAuthor(), bookDto.getImageUrl(), bookDto.getIsbn(), user)));
                 } else {
-                    book = bookRepository.findByTitleAndAuthor(bookDto.getTitle(),
+                    book = bookRepository.findByUserAndTitleAndAuthor(user, bookDto.getTitle(),
                                     bookDto.getAuthor())
                             .orElseGet(() -> bookRepository.save(
                                     Book.create(bookDto.getTitle(), bookDto.getAuthor(),

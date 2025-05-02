@@ -39,11 +39,11 @@ public class BookService {
          isbn이 없는 책은 제목과 저자로 필터링한다.
          */
         if (request.getIsbn() != null) {
-            book = bookRepository.findByIsbn(request.getIsbn())
+            book = bookRepository.findByUserAndIsbn(user, request.getIsbn())
                     .orElseGet(() -> bookRepository.save(
                             Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
         } else {
-            book = bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor())
+            book = bookRepository.findByUserAndTitleAndAuthor(user, request.getTitle(), request.getAuthor())
                     .orElseGet(() -> bookRepository.save(
                             Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
         }
