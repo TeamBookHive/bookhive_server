@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 public class BookCreateRequest {
 
-    private Long id;
-
     @NotBlank(message = "책 제목은 필수로 입력해야 합니다.")
     private String title;
 
