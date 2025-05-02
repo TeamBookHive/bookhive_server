@@ -54,8 +54,7 @@ public class BookService {
     public List<BookShowResponse> findAll(String token) {
         User user = userResolver.resolve(token);
 
-        return BookDtoMapper.toBookShowResponse(bookRepository.findAllByUserOrderByCreatedAtDesc(user)
-                .orElse(new ArrayList<>()));
+        return BookDtoMapper.toBookShowResponse(bookRepository.findAllByUserOrderByCreatedAtDesc(user));
     }
 
     public BookShowDetailResponse showDetail(String token, Long bookId) {
