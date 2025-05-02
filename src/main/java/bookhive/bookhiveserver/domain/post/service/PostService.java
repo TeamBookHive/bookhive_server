@@ -88,8 +88,8 @@ public class PostService {
         BookInfo bookDto = request.getBook(); // 이것도 임시
 
         if (bookDto != null) {
-            if (bookDto.getId() != null) {
-                book = bookRepository.findById(bookDto.getId())
+            if (bookDto.getBookId() != null) {
+                book = bookRepository.findById(bookDto.getBookId())
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
             } else {
                 // TO DO: 잘못된 요청입니다. 에러 반환
