@@ -24,11 +24,22 @@ public class BookService {
     @Transactional
     public BookCreateResponse create(BookCreateRequest request, String token) {
         User user = userResolver.resolve(token);
+        Book book;
 
-        // TO DO: Isbn으로 검증 후 중복 에러 반환으로 변경
-        Book book = bookRepository.findByIsbn(request.getIsbn())
-                .orElseGet(() -> bookRepository.save(
-                        Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
+        /*
+         사용자의 착오로 인해 이미 저장된 책을 추가하려는 시나리오가 발생할 가능성이 있다.
+         따라서, 추가 화면에서 요청한 책의 isbn으로 1차 필터링,
+         isbn이 없는 책은 제목과 저자로 필터링한다.
+         */
+        if (request.getIsbn() != null) {
+            book = bookRepository.findByIsbn(request.getIsbn())
+                    .orElseGet(() -> bookRepository.save(
+                            Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
+        } else {
+            book = bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor())
+                    .orElseGet(() -> bookRepository.save(
+                            Book.create(request.getTitle(), request.getAuthor(), request.getImageUrl(), request.getIsbn(), user)));
+        }
 
         return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
     }
