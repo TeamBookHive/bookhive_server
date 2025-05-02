@@ -1,8 +1,12 @@
 package bookhive.bookhiveserver.domain.book.dto.mapper;
 
 import bookhive.bookhiveserver.domain.book.dto.response.BookCreateResponse;
+import bookhive.bookhiveserver.domain.book.dto.response.BookDetail;
+import bookhive.bookhiveserver.domain.book.dto.response.BookShowDetailResponse;
 import bookhive.bookhiveserver.domain.book.dto.response.BookShowResponse;
 import bookhive.bookhiveserver.domain.book.entity.Book;
+import bookhive.bookhiveserver.domain.post.dto.response.PostDetail;
+import bookhive.bookhiveserver.domain.post.entity.Post;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,5 +31,16 @@ public class BookDtoMapper {
                         .createdAt(book.getCreatedAt())
                         .build())
                 .toList();
+    }
+
+    public static BookShowDetailResponse toBookShowDetailResponse(Book book, List<Post> posts) {
+        BookDetail bookDetail = new BookDetail(book);
+        List<PostDetail> postDetails = posts.stream()
+                .map(PostDetail::new)
+                .toList();
+        return BookShowDetailResponse.builder()
+                .book(bookDetail)
+                .posts(postDetails)
+                .build();
     }
 }

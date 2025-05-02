@@ -2,6 +2,7 @@ package bookhive.bookhiveserver.domain.book.controller;
 
 import bookhive.bookhiveserver.domain.book.dto.request.BookCreateRequest;
 import bookhive.bookhiveserver.domain.book.dto.response.BookCreateResponse;
+import bookhive.bookhiveserver.domain.book.dto.response.BookShowDetailResponse;
 import bookhive.bookhiveserver.domain.book.dto.response.BookShowResponse;
 import bookhive.bookhiveserver.domain.book.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -31,8 +33,15 @@ public class BookController {
     }
 
     @GetMapping("")
-    @Operation(summary = "책 전체 조회", description = "사용자가 저장한 모든 책을 반환합니다.")
+    @Operation(summary = "책 전체 조회", description = "사용자가 저장한 모든 책을 조회합니다.")
     public ResponseEntity<List<BookShowResponse>> show(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(bookService.findAll(token));
+    }
+
+    @GetMapping("/{bookId}")
+    @Operation(summary = "책 상세 페이지", description = "사용자의 특정 책에 대한 모든 아카이브를 조회합니다.")
+    public ResponseEntity<BookShowDetailResponse> showDetail(@RequestHeader("Authorization") String token,
+                                                             @PathVariable Long bookId) {
+        return ResponseEntity.ok(bookService.showDetail(token, bookId));
     }
 }
