@@ -3,11 +3,13 @@ package bookhive.bookhiveserver.domain.book.service;
 import bookhive.bookhiveserver.domain.book.dto.mapper.BookDtoMapper;
 import bookhive.bookhiveserver.domain.book.dto.request.BookCreateRequest;
 import bookhive.bookhiveserver.domain.book.dto.response.BookCreateResponse;
-import bookhive.bookhiveserver.domain.book.dto.response.BookShowLatestResponse;
+import bookhive.bookhiveserver.domain.book.dto.response.BookShowResponse;
 import bookhive.bookhiveserver.domain.book.entity.Book;
 import bookhive.bookhiveserver.domain.book.repository.BookRepository;
 import bookhive.bookhiveserver.domain.user.entity.User;
 import bookhive.bookhiveserver.global.auth.resolver.UserResolver;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +33,10 @@ public class BookService {
         return BookDtoMapper.toBookCreateResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
     }
 
-    public BookShowLatestResponse findLatestByUser(String token) {
+    public List<BookShowResponse> findAll(String token) {
         User user = userResolver.resolve(token);
 
-        Book book = bookRepository.findTopByUserOrderByCreatedAtDesc(user)
-                .orElse(null);
-
-        if (book == null) return BookShowLatestResponse.empty();
-
-        return BookDtoMapper.toBookShowLatestResponse(book.getId(), book.getTitle(), book.getAuthor(), book.getImageUrl(), book.getCreatedAt());
+        return BookDtoMapper.toBookShowResponse(bookRepository.findAllByUserOrderByCreatedAtDesc(user)
+                .orElse(new ArrayList<>()));
     }
 }
