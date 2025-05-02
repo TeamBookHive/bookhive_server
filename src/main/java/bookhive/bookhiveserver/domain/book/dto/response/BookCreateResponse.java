@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 @Builder
 public class BookCreateResponse {
-
     private Long id;
     private String title;
     private String author;
+    private String isbn;
     private String imageUrl;
     private LocalDateTime createdAt;
 }
