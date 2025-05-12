@@ -55,6 +55,7 @@ public class ContentService {
         User user = userResolver.resolve(token);
         String originTags = convertTagsToString(user);
 
+        if (request.getContent().isEmpty() || request.getContent().isBlank()) return null;
         if (originTags.isEmpty()) return null;
 
         return aiClient.sortTags(request.getContent(), originTags).getTags();

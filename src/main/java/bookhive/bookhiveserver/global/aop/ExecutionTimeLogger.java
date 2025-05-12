@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.global.global;
+package bookhive.bookhiveserver.global.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
