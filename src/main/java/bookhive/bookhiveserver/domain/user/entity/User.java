@@ -27,7 +27,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String deviceId;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "auth_token", nullable = false, unique = true)
     private String token;
 
     public static User create(String deviceId, String token) {
