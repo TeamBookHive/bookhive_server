@@ -13,6 +13,6 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
     void deleteByPostId(@Param("postId")Long postId);
 
     @Modifying
-    @Query(value = "INSERT INTO post_tag (post_id, tag_id) VALUES (:postId, :tagId)", nativeQuery = true)
+    @Query(value = "INSERT INTO post_tags (post_id, tag_id) VALUES (:postId, :tagId)", nativeQuery = true)
     void insertPostTag(@Param("postId") Long postId, @Param("tagId") Long tagId);
 }

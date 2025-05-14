@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "posts")
 public class Post {
 
     @Id
@@ -38,7 +40,7 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
-    @Column(name = "content", nullable = false, length = 1000)
+    @Column(name = "sentence", nullable = false, length = 1000)
     @Size(min = 1, max = 1000)
     private String content;
 

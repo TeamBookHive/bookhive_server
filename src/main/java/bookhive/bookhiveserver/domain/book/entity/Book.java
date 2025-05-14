@@ -32,7 +32,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 @Table(
-        name = "book",
+        name = "books",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uq_user_isbn", columnNames = {"user_id", "isbn"})
         }
