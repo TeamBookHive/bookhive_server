@@ -3,6 +3,10 @@ spring:
     resources:
       add-mappings: false
   datasource:
+    hikari:
+      data-source-properties:
+        prepareThreshold: 0
+        preferQueryMode: simple
     url: ${DATA_URI}
     username: ${DATA_USERNAME}
     password: ${DATA_PASSWORD}
