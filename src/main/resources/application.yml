@@ -7,7 +7,7 @@ spring:
       data-source-properties:
         prepareThreshold: 0
         preferQueryMode: simple
-      maximum-pool-size: 20
+      maximum-pool-size: 15
     url: ${DATA_URI}
     username: ${DATA_USERNAME}
     password: ${DATA_PASSWORD}
