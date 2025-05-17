@@ -55,8 +55,8 @@ public class ContentService {
         User user = userResolver.resolve(token);
         String originTags = convertTagsToString(user);
 
-        if (request.getContent().isEmpty() || request.getContent().isBlank()) return null;
-        if (originTags.isEmpty()) return null;
+        if (request.getContent() == null || request.getContent().isBlank()) return null;
+        if (originTags.isBlank()) return null;
 
         return aiClient.sortTags(request.getContent(), originTags).getTags();
     }
@@ -88,6 +88,8 @@ public class ContentService {
     }
 
     public Mono<List<String>> recommendRelevantNewTags(RecommendTagsRequest request, String token) {
+        if (request.getContent() == null || request.getContent().isBlank()) return Mono.just(Collections.emptyList());
+
         User user = userResolver.resolve(token);
         String originTags = convertTagsToString(user);
 
@@ -128,8 +130,7 @@ public class ContentService {
         List<String> tagNames = tagRepository.findAllByUser(user).stream()
                 .map(Tag::getValue)
                 .collect(Collectors.toList());
-        String tags = String.join(", ", tagNames);
-        return tags;
+        return String.join(", ", tagNames);
     }
 
     public String convertTagPostMapToString(Map<String, List<String>> tagToPosts) {
