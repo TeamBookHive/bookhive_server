@@ -8,6 +8,9 @@ spring:
         prepareThreshold: 0
         preferQueryMode: simple
       maximum-pool-size: 5
+      idle-timeout: 30000
+      max-lifetime: 600000
+      pool-name: bookHikariPool
 
     url: ${DATA_URI}
     username: ${DATA_USERNAME}
@@ -25,7 +28,6 @@ spring:
       chat:
         options:
           model: gpt-4o-mini
-
 clova:
   search-url: ${CLOVA_SEARCH_URL}
   content-url: ${CLOVA_CONTENT_URL}
@@ -38,3 +40,7 @@ posthog:
 
 slack:
   url: ${SLACK_URL}
+
+logging:
+  level:
+    com.zaxxer.hikari: DEBUG
