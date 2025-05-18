@@ -7,10 +7,11 @@ spring:
       data-source-properties:
         prepareThreshold: 0
         preferQueryMode: simple
-      maximum-pool-size: 5
+      maximum-pool-size: 3
       idle-timeout: 30000
       max-lifetime: 600000
       pool-name: bookHikariPool
+      minimum-idle: 1
 
     url: ${DATA_URI}
     username: ${DATA_USERNAME}
