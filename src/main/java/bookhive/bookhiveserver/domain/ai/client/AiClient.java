@@ -10,8 +10,6 @@ public interface AiClient {
 
     AiCorrectResponse correct(String content);
 
-    AiRecommendTagsResponse recommendTags(String content, String originTags);
-
     AiRecommendTagsResponse sortTags(String content, String originTags);
 
     Mono<AiRecommendTagsResponse> recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags);

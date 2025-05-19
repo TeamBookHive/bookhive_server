@@ -67,25 +67,6 @@ public class OpenAiClient implements AiClient {
     }
 
     @Override
-    public AiRecommendTagsResponse recommendTags(String content, String originTags) {
-
-        String prompt = """
-            당신은 OCR 기술로 인식된 책 문장 데이터를 바탕으로 어울리는 태그를 추천하는 AI입니다. 다음 제약 사항을 바탕으로 가장 적절한 태그들을 추천해 주세요.
-    
-            # 기존 태그 목록
-            기존 태그: %s
-    
-            # 제약 사항
-            - 태그의 총 개수는 3개 이상 5개 이하여야 합니다. 최종 결과물은 반드시 새로운 태그 3개와 기존 태그 최소 0개 최대 2개로 구성되어야 합니다.
-            - 새로운 태그: 기존 태그들과 중복되지 않는 새로운 태그 3개를 반드시 생성하여 추천해야 합니다. 새로운 태그의 개수는 정확히 3개이며, 2개 또는 4개가 될 수 없습니다.
-            - 기존 태그: 기존 태그 목록 중 어울리는 태그를 0개 이상 2개 이하 선택할 수 있습니다. 어울리는 태그가 없다면 선택하지 않아도 됩니다.
-            - 출력은 오직 태그 리스트만 반환해야 합니다. 절대로 형식에서 벗어난 부연 설명, 대답, 추가적인 텍스트, 특수 문자를 포함하지 마세요. 제약 사항을 어길 경우 불이익이 존재할 수 있습니다.
-            """.formatted(originTags);
-
-        return callWithStructuredOutput(content, prompt, AiRecommendTagsResponse.class);
-    }
-
-    @Override
     public AiRecommendTagsResponse sortTags(String content, String originTags) {
         String prompt = """
             당신은 독서 기록에 어울리는 태그를 정렬하는 AI입니다.
