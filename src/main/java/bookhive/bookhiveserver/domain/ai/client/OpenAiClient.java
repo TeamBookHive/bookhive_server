@@ -264,15 +264,13 @@ public class OpenAiClient implements AiClient {
                         .responseFormat(new ResponseFormat(Type.JSON_SCHEMA, jsonSchema))
                         .build());
 
-        Mono<T> fluxResponse = this.chatClient.prompt(prompt)
+        return this.chatClient.prompt(prompt)
                 .system(system)
                 .stream()
                 .content()
                 .collectList()
                 .map(list -> String.join("", list))
                 .map(outputConverter::convert);
-
-        return fluxResponse;
     }
 
     private String extractSafeContent(ChatResponse response) {

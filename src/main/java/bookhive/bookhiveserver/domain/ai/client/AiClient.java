@@ -10,6 +10,8 @@ public interface AiClient {
 
     AiCorrectResponse correct(String content);
 
+    // TODO: sort, search로 묶고 파사드 사용하기
+
     AiRecommendTagsResponse sortTags(String content, String originTags);
 
     Mono<AiRecommendTagsResponse> recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags);
