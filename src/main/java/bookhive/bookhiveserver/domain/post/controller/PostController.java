@@ -48,7 +48,7 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(@RequestHeader("Authorization") String token,
                              @RequestBody PostRequest request,
                              @PathVariable("postId") String postId) {
-        Post post = postService.updatePost(postId, request.getContent(), request.getTags(), token);
+        Post post = postService.updatePost(postId, request.getContent(), request.getTags(), request.getBook(), token);
         return ResponseEntity.ok(new PostResponse(post));
     }
 

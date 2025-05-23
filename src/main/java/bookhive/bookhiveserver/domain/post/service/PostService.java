@@ -120,7 +120,7 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(String postId, String newContent, List<TagRequest> newTags, String token) {
+    public Post updatePost(String postId, String newContent, List<TagRequest> newTags, BookInfo bookDto, String token) {
 
         User user = userResolver.resolve(token);
 
@@ -145,6 +145,18 @@ public class PostService {
             }
 
             postTagRepository.insertPostTag(Long.valueOf(postId), tagRequest.getId());
+        }
+
+        if (bookDto != null) {
+            if (bookDto.getBookId() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK.toString() + "책 id가 누락되었습니다.");
+            }
+
+            Book newBook = bookRepository.findById(bookDto.getBookId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
+            if (!Objects.equals(currentPost.getBook().getId(), newBook.getId())) {
+                currentPost.setBook(newBook);
+            }
         }
 
         currentPost.update(newContent);

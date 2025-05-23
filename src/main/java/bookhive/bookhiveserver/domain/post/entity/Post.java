@@ -69,6 +69,19 @@ public class Post {
                 .build();
     }
 
+    // 책과 아카이브의 연관관계 재설정 메서드
+    public void setBook(Book newBook) {
+        if (this.book != null) {
+            this.book.getPosts().remove(this);
+        }
+
+        this.book = newBook;
+
+        if (newBook != null && !newBook.getPosts().contains(this)) {
+            newBook.getPosts().add(this);
+        }
+    }
+
     public void update(String newContent) {
         this.content = newContent;
     }
