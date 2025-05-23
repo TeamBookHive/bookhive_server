@@ -92,7 +92,20 @@ public class PostService {
                 book = bookRepository.findById(bookDto.getBookId())
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
             } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
+                // TO DO: 잘못된 요청입니다. 에러 반환
+                // throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.";
+
+                if (bookDto.getIsbn() != null) {
+                    book = bookRepository.findByUserAndIsbn(user, bookDto.getIsbn())
+                            .orElseGet(() -> bookRepository.save(
+                                    Book.create(bookDto.getTitle(), bookDto.getAuthor(), bookDto.getImageUrl(), bookDto.getIsbn(), user)));
+                } else {
+                    book = bookRepository.findByUserAndTitleAndAuthor(user, bookDto.getTitle(),
+                                    bookDto.getAuthor())
+                            .orElseGet(() -> bookRepository.save(
+                                    Book.create(bookDto.getTitle(), bookDto.getAuthor(),
+                                            bookDto.getImageUrl(), null, user)));
+                }
             }
         }
 
