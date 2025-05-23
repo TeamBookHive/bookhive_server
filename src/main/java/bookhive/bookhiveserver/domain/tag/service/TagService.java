@@ -52,7 +52,7 @@ public class TagService {
         tagRequests.stream()
             .filter(t -> t.getValue().length() > 10)
             .findFirst()
-            .ifPresent(t -> {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString() + t.getValue());
+            .ifPresent(t -> {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS + t.getValue());
         });
 
         // 성능 개선: 사용자의 태그를 미리 조회해두고, 해당 요청에서 생성되는 태그는 직접 추가
@@ -96,10 +96,10 @@ public class TagService {
         User user = userResolver.resolve(token);
 
         Tag tag = tagRepository.findById(Long.valueOf(tagId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG.toString() + tagId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_TAG + tagId));
 
         if (!Objects.equals(tag.getUser(), user)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_TAG.toString() + tagId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_TAG + tagId);
         }
 
         tagRepository.deleteById(Long.valueOf(tagId));

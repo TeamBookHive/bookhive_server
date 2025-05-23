@@ -128,10 +128,10 @@ public class PostService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.TOO_MANY_LETTERS.toString());
 
         Post currentPost = postRepository.findById(Long.valueOf(postId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST.toString() + postId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST + postId));
 
         if (!Objects.equals(currentPost.getUser(), user)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST.toString() + postId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST + postId);
         }
 
         postTagRepository.deleteByPostId(Long.valueOf(postId));
@@ -149,7 +149,7 @@ public class PostService {
 
         if (bookDto != null) {
             if (bookDto.getBookId() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK.toString() + "책 id가 누락되었습니다.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
             }
 
             Book newBook = bookRepository.findById(bookDto.getBookId())
@@ -170,10 +170,10 @@ public class PostService {
         User user = userResolver.resolve(token);
 
         Post post = postRepository.findById(Long.valueOf(postId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST.toString() + postId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_POST + postId));
 
         if (!Objects.equals(post.getUser(), user)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST.toString() + postId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage.UNAUTHORIZED_POST + postId);
         }
 
         postRepository.deleteById(Long.valueOf(postId));

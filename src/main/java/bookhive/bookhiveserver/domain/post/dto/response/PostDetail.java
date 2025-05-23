@@ -1,6 +1,5 @@
 package bookhive.bookhiveserver.domain.post.dto.response;
 
-import bookhive.bookhiveserver.domain.book.dto.response.BookDetail;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.tag.dto.response.TagResponse;
 import java.time.LocalDateTime;

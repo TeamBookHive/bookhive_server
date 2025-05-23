@@ -121,7 +121,7 @@ public class OpenAiClient implements AiClient {
 
         return callWithStructuredOutputAsync(content, prompt, AiRecommendTagsResponse.class);
 
-    };
+    }
 
     @Override
     public Mono<AiRecommendTagsResponse> recommendNewTags(String content, String originTags) {
@@ -146,7 +146,7 @@ public class OpenAiClient implements AiClient {
         """.formatted(originTags);
 
         return callWithStructuredOutputAsync(content, prompt, AiRecommendTagsResponse.class);
-    };
+    }
 
     @Override
     public AiSearchTypeResponse checkSearchType(String content) {
@@ -264,15 +264,13 @@ public class OpenAiClient implements AiClient {
                         .responseFormat(new ResponseFormat(Type.JSON_SCHEMA, jsonSchema))
                         .build());
 
-        Mono<T> fluxResponse = this.chatClient.prompt(prompt)
+        return this.chatClient.prompt(prompt)
                 .system(system)
                 .stream()
                 .content()
                 .collectList()
                 .map(list -> String.join("", list))
                 .map(outputConverter::convert);
-
-        return fluxResponse;
     }
 
     private String extractSafeContent(ChatResponse response) {

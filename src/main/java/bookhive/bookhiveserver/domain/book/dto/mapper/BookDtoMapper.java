@@ -7,7 +7,6 @@ import bookhive.bookhiveserver.domain.book.dto.response.BookShowResponse;
 import bookhive.bookhiveserver.domain.book.entity.Book;
 import bookhive.bookhiveserver.domain.post.dto.response.PostDetail;
 import bookhive.bookhiveserver.domain.post.entity.Post;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class BookDtoMapper {
