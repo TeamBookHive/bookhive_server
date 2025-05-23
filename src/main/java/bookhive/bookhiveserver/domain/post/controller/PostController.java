@@ -4,6 +4,7 @@ import bookhive.bookhiveserver.domain.post.dto.mapper.PostDtoMapper;
 import bookhive.bookhiveserver.domain.post.dto.request.PostRequest;
 import bookhive.bookhiveserver.domain.post.dto.response.PostCreateResponse;
 import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
+import bookhive.bookhiveserver.domain.post.dto.response.PostUpdateResponse;
 import bookhive.bookhiveserver.domain.post.entity.Post;
 import bookhive.bookhiveserver.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,11 +46,11 @@ public class PostController {
 
     @PutMapping("/{postId}")
     @Operation(summary = "아카이브 수정", description = "사용자가 특정 아카이브의 정보를 수정합니다.")
-    public ResponseEntity<PostResponse> updatePost(@RequestHeader("Authorization") String token,
-                             @RequestBody PostRequest request,
-                             @PathVariable("postId") String postId) {
+    public ResponseEntity<PostUpdateResponse> updatePost(@RequestHeader("Authorization") String token,
+                                                         @RequestBody PostRequest request,
+                                                         @PathVariable("postId") String postId) {
         Post post = postService.updatePost(postId, request.getContent(), request.getTags(), request.getBook(), token);
-        return ResponseEntity.ok(new PostResponse(post));
+        return ResponseEntity.ok(PostDtoMapper.toPostUpdateResponse(post));
     }
 
     @DeleteMapping("/{postId}")
