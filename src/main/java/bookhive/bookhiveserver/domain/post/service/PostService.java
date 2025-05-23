@@ -79,16 +79,20 @@ public class PostService {
                 }
             }
         }
-        
+
+        // 기존 로직: book이 null이 아닐 때, isbn으로 찾고 있으면 그걸 반환, 없으면 새로 저장
+        // 현재 로직: book이 null이 아닐 때, id로 찾아서 그걸 반환, id가 null이면 에러 나도록
+        // 과도기 로직: book이 null이 아닐 때, id가 null이더라도 동작해야 함. 일단 isbn으로 찾고 있으면 그걸 반환, 없으면 새로 저장
+
         Book book = null;
         BookInfo bookDto = request.getBook(); // 이것도 임시
 
         if (bookDto != null) {
-            if (bookDto.getId() != null) {
-                book = bookRepository.findById(bookDto.getId())
+            if (bookDto.getBookId() != null) {
+                book = bookRepository.findById(bookDto.getBookId())
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
             } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
             }
         }
 
@@ -133,11 +137,11 @@ public class PostService {
         }
 
         if (bookDto != null) {
-            if (bookDto.getId() == null) {
+            if (bookDto.getBookId() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
             }
 
-            Book newBook = bookRepository.findById(bookDto.getId())
+            Book newBook = bookRepository.findById(bookDto.getBookId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
             if (!Objects.equals(currentPost.getBook().getId(), newBook.getId())) {
                 currentPost.setBook(newBook);
