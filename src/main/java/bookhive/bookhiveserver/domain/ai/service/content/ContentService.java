@@ -44,13 +44,6 @@ public class ContentService {
         return correctedContent;
     }
 
-    public String recommendTags(RecommendTagsRequest request, String token) {
-        User user = userResolver.resolve(token);
-        String originTags = convertTagsToString(user);
-
-        return String.join(", ", aiClient.recommendTags(request.getContent(), originTags).getTags());
-    }
-
     public List<String> sortTagsByContentRelevance(RecommendTagsRequest request, String token) {
         User user = userResolver.resolve(token);
         String originTags = convertTagsToString(user);

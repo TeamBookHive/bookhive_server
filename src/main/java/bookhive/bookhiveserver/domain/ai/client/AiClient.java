@@ -8,15 +8,19 @@ import reactor.core.publisher.Mono;
 
 public interface AiClient {
 
+    // correct sentences
+
     AiCorrectResponse correct(String content);
 
-    AiRecommendTagsResponse recommendTags(String content, String originTags);
+    // recommend tags
 
     AiRecommendTagsResponse sortTags(String content, String originTags);
 
     Mono<AiRecommendTagsResponse> recommendOriginTags(String content, String postsIncludeRelevantTags, String extractedRelevantTags);
 
     Mono<AiRecommendTagsResponse> recommendNewTags(String content, String originTags);
+
+    // search archives
 
     AiSearchTypeResponse checkSearchType(String question);
 
