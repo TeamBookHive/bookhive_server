@@ -42,14 +42,14 @@ public class BookController {
     @GetMapping("/{bookId}")
     @Operation(summary = "책 상세 페이지", description = "사용자의 특정 책에 대한 모든 아카이브를 조회합니다.")
     public ResponseEntity<BookShowDetailResponse> showDetail(@RequestHeader("Authorization") String token,
-                                                             @PathVariable Long bookId) {
+                                                             @PathVariable("bookId") Long bookId) {
         return ResponseEntity.ok(bookService.showDetail(token, bookId));
     }
 
     @DeleteMapping("/{bookId}")
     @Operation(summary = "책 삭제", description = "사용자의 특정 책을 삭제합니다.")
     public ResponseEntity<Void> delete(@RequestHeader("Authorization") String token,
-                                       @PathVariable Long bookId) {
+                                       @PathVariable("bookId") Long bookId) {
         bookService.delete(token, bookId);
         return ResponseEntity.noContent().build();
     }

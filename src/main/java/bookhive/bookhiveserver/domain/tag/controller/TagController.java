@@ -57,7 +57,7 @@ public class TagController {
     @DeleteMapping("/{tagId}")
     @Operation(summary = "태그 삭제", description = "사용자가 특정 태그를 삭제합니다.")
     public void deleteTag(@RequestHeader("Authorization") String token,
-                            @PathVariable String tagId) {
+                            @PathVariable("tagId") String tagId) {
         tagService.deleteTag(tagId, token);
     }
 

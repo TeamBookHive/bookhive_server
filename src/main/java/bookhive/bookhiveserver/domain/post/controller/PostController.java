@@ -47,7 +47,7 @@ public class PostController {
     @Operation(summary = "아카이브 수정", description = "사용자가 특정 아카이브의 정보를 수정합니다.")
     public ResponseEntity<PostResponse> updatePost(@RequestHeader("Authorization") String token,
                              @RequestBody PostRequest request,
-                             @PathVariable String postId) {
+                             @PathVariable("postId") String postId) {
         Post post = postService.updatePost(postId, request.getContent(), request.getTags(), token);
         return ResponseEntity.ok(new PostResponse(post));
     }
@@ -55,7 +55,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @Operation(summary = "아카이브 삭제", description = "사용자가 특정 아카이브를 삭제합니다.")
     public void deletePost(@RequestHeader("Authorization") String token,
-                             @PathVariable String postId) {
+                             @PathVariable("postId") String postId) {
 
         postService.deletePost(postId, token);
     }
