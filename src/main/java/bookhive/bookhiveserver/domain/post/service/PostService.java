@@ -25,11 +25,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -137,10 +139,11 @@ public class PostService {
         }
 
         if (bookDto != null) {
+            log.info(String.valueOf(bookDto));
             if (bookDto.getId() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
             }
-
+            log.info(String.valueOf(bookDto.getId()));
             Book newBook = bookRepository.findById(bookDto.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
             if (currentPost.getBook() == null ||
