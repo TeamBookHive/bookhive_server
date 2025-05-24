@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class BookInfo {
 
-    private Long bookId;
+    private Long id;
     private String title;
     private String author;
     private String imageUrl;

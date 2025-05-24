@@ -88,24 +88,11 @@ public class PostService {
         BookInfo bookDto = request.getBook(); // 이것도 임시
 
         if (bookDto != null) {
-            if (bookDto.getBookId() != null) {
-                book = bookRepository.findById(bookDto.getBookId())
+            if (bookDto.getId() != null) {
+                book = bookRepository.findById(bookDto.getId())
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
             } else {
-                // TO DO: 잘못된 요청입니다. 에러 반환
-                // throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.";
-
-                if (bookDto.getIsbn() != null) {
-                    book = bookRepository.findByUserAndIsbn(user, bookDto.getIsbn())
-                            .orElseGet(() -> bookRepository.save(
-                                    Book.create(bookDto.getTitle(), bookDto.getAuthor(), bookDto.getImageUrl(), bookDto.getIsbn(), user)));
-                } else {
-                    book = bookRepository.findByUserAndTitleAndAuthor(user, bookDto.getTitle(),
-                                    bookDto.getAuthor())
-                            .orElseGet(() -> bookRepository.save(
-                                    Book.create(bookDto.getTitle(), bookDto.getAuthor(),
-                                            bookDto.getImageUrl(), null, user)));
-                }
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
             }
         }
 
@@ -150,13 +137,14 @@ public class PostService {
         }
 
         if (bookDto != null) {
-            if (bookDto.getBookId() == null) {
+            if (bookDto.getId() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessage.INVALID_BOOK + "책 id가 누락되었습니다.");
             }
 
-            Book newBook = bookRepository.findById(bookDto.getBookId())
+            Book newBook = bookRepository.findById(bookDto.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.INVALID_BOOK.toString()));
-            if (!Objects.equals(currentPost.getBook().getId(), newBook.getId())) {
+            if (currentPost.getBook() == null ||
+                    !Objects.equals(currentPost.getBook().getId(), newBook.getId())) {
                 currentPost.setBook(newBook);
             }
         }
