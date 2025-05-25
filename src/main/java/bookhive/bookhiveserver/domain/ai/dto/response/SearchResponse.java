@@ -1,4 +1,4 @@
-package bookhive.bookhiveserver.domain.ai.dto.response.clova;
+package bookhive.bookhiveserver.domain.ai.dto.response;
 
 import bookhive.bookhiveserver.domain.post.dto.response.PostResponse;
 import java.util.List;
