@@ -41,7 +41,3 @@ posthog:
 
 slack:
   url: ${SLACK_URL}
-
-logging:
-  level:
-    com.zaxxer.hikari: DEBUG
