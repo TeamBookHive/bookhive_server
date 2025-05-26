@@ -55,13 +55,13 @@ jobs:
             
             docker pull bookhive.kr.ncr.ntruss.com/bookhive
             
-            echo "${{ secrets.APPLICATION_ENV }}" | base64 --decode > /root/.env
+            echo "${{ secrets.APPLICATION_ENV }}" | base64 --decode > "${{ secrets.ENV_FILE_URL }}"
             
             if [ "$(docker ps -q -f name=bookhive)" ]; then
               docker stop bookhive && docker rm bookhive
             fi
 
             docker run -d --name bookhive \
-              --env-file /root/.env -p 8080:8080 --restart on-failure:3 \
+              --env-file "${{ secrets.ENV_FILE_URL }}" -p 8080:8080 --restart on-failure:3 \
               -v /var/log/tomcat8/catalina.out:/var/log/tomcat8/catalina.out \
               bookhive.kr.ncr.ntruss.com/bookhive
